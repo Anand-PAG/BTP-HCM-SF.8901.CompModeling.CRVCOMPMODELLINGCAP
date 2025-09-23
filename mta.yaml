@@ -1,0 +1,76 @@
+_schema-version: 3.3.0
+ID: ZHR_COMPMODEL_CAP
+version: 1.0.0
+description: "Compensation Model DB Model/CAP Services."
+parameters:
+  enable-parallel-deployments: true
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm ci
+        - npx cds build --production
+modules:
+  - name: ZHR_COMPMODEL_CAP-srv
+    type: nodejs
+    path: gen/srv
+    parameters:
+      buildpack: nodejs_buildpack
+      readiness-health-check-type: http
+      readiness-health-check-http-endpoint: /health
+      memory: 2048M
+    build-parameters:
+      builder: npm
+      ignore:
+        - node_modules/
+    provides:
+      - name: srv-api # required by consumers of CAP services (e.g. approuter)
+        properties:
+          srv-url: ${default-url}
+    requires:
+      - name: ZHR_COMPMODEL_CAP-db
+      - name: ZHR_COMPMODEL_CAP-auth
+      - name: ZHR_COMPMODEL_CAP-connectivity
+      - name: ZHR_COMPMODEL_CAP-destination
+
+  - name: ZHR_COMPMODEL_CAP-db-deployer
+    type: hdb
+    path: gen/db
+    parameters:
+      buildpack: nodejs_buildpack
+      readiness-health-check-type: http
+      readiness-health-check-http-endpoint: /health
+      memory: 2048M
+    build-parameters:
+      ignore:
+        - node_modules/
+    requires:
+      - name: ZHR_COMPMODEL_CAP-db
+
+resources:
+  - name: ZHR_COMPMODEL_CAP-db
+    type: com.sap.xs.hdi-container
+    parameters:
+      service: hana
+      service-plan: hdi-shared
+      config:
+        schema: ZHR_COMPMODEL_CAP_db
+  - name: ZHR_COMPMODEL_CAP-destination
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-plan: lite
+  - name: ZHR_COMPMODEL_CAP-auth
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: xsuaa
+      service-plan: application
+      path: ./xs-security.json
+      config:
+        xsappname: ZHR_COMPMODEL_CAP-xsuaa
+        tenant-mode: dedicated
+  - name: ZHR_COMPMODEL_CAP-connectivity
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: connectivity
+      service-plan: lite

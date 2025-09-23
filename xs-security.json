@@ -1,0 +1,57 @@
+{
+  "xsappname": "ZHR_COMPMODEL_CAP",
+  "tenant-mode": "dedicated",
+  "description": "Compensation Model Platform",
+  "scopes": [
+    {
+      "name": "uaa.user",
+      "description": "UAA Service",
+      "grant-as-authority-to-apps": [
+        "$XSAPPNAME(application, xsappforclientapp)"
+      ]
+    },
+    {
+      "name":"$XSAPPNAME.ZBTP_COMP_ROLE_USER",
+      "description":"User Role"
+    },
+    {
+      "name":"$XSAPPNAME.ZBTP_COMP_ROLE_APPROVER",
+      "description":"Approver Role"
+    },
+    {
+      "name":"$XSAPPNAME.ZBTP_COMP_ROLE_ADMIN",
+      "description":"Admin Role"
+    }
+  ],
+  "attributes": [],
+  "role-templates": [
+    {
+      "name": "Token_Exchange",
+      "description": "UAA",
+      "scope-references": [
+        "uaa.user"
+      ]
+    },
+    {
+      "name": "ZBTP_COMP_ROLE_USER",
+      "description": "Compensation Model User Role",
+      "scope-references": [
+        "$XSAPPNAME.ZBTP_COMP_ROLE_USER"
+      ]
+    },
+    {
+      "name": "ZBTP_COMP_ROLE_APPROVER",
+      "description": "Compensation Model Approver Role",
+      "scope-references": [
+        "$XSAPPNAME.ZBTP_COMP_ROLE_APPROVER"
+      ]
+    },
+    {
+      "name": "ZBTP_COMP_ROLE_ADMIN",
+      "description": "Compensation Model Admin Role",
+      "scope-references": [
+        "$XSAPPNAME.ZBTP_COMP_ROLE_ADMIN"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+    "requires": {
+        "auth": "xsuaa"
+    },
+    "launchpad": {
+        "version": "1.132.1"
+    }
+}

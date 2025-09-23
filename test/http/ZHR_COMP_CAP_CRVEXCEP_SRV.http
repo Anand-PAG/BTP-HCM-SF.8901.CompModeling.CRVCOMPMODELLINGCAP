@@ -1,0 +1,1739 @@
+@svc = http://localhost:4004/odata/v4/zhr-comp-cap-crvexcep-srv
+@default_headers=Content-Type: application/json
+
+## ZHR_COMP_CAP_CRVEXCEP_SRV
+GET {{svc}}/$metadata
+
+### ## THRSHLD Get
+GET {{svc}}/BusinessDivisions
+
+### Targettab get
+GET {{svc}}/TargetTabs
+
+### Send for Approval
+POST http://localhost:4004/odata/v4/zhr-comp-cap-crvexcep-srv/updateStatus
+Content-Type: application/json
+Accept: application/json
+
+{
+    "payload": [
+        {
+            "year": 2025,
+            "ModelId": "CM20250001",
+            "Targettab": "HR",
+            "option": "Option2",
+            "name": "Default User",
+            "emailid": "",
+            "comments": "Rejected ny manohar 24",
+            "Status": "R"
+        }
+    ]
+}
+
+
+
+### persona get
+POST /odata/v4/zhr-comp-cap-crvexcep-srv/Persona
+Content-Type: application/json
+
+{ "user_email": "alice@example.com", "role": "approver" }
+
+
+### Target Tabs Update
+PUT {{svc}}/TargetTabs(ID='41fb91b9-4c2a-41f3-8b25-74d936abf711',year=2025,Modeltype='CRV',TargetTabName='Target1')
+Content-Type: application/json
+
+{
+  "custBusUnit": "Business12",
+  "custDivision": "Division12",
+  "fieldUsage": "S"
+}
+
+
+###Publish
+POST {{svc}}/successfactorupload
+Content-Type:  application/json
+
+{
+    "payload": [
+        {
+            "year": 2025,
+            "ModelId": "",
+            "Targettab": "",
+            "option": "",
+            "name": "Default User",
+            "comments": "Approved by Manohar 9/2"
+        }
+    ]
+}
+
+###update status
+
+POST {{svc}}/updateStatus
+Content-Type:  application/json
+
+{
+    "payload": [
+        {
+            "year": 2025,
+            "ModelId": "CM20250025",
+            "Targettab": "Test-1",
+            "option": "Option1",
+            "name": "Default User",
+            "emailid": "",
+            "comments": "Approved",
+            "Status": "R"
+        }
+    ]
+}
+
+###update Approve Status
+
+POST {{svc}}/updateApproveoRejectnView
+Content-Type:  application/json
+
+{
+    "payload" : {
+            "year": 2025,
+            "ModelId": "CM20250075",
+            "Targettab": "HR",
+            "option": "Option1",
+            "name": "Venkata Gedala",
+            "emailid": "venkata.gedala@sce.com",
+            "comments": "Approved by Manohar 09/06/2025",
+            "Status": "A"
+    }
+
+}
+
+
+### CRV Model Create
+POST {{svc}}/postCRVModel
+Content-Type: application/json
+
+{
+    "payload": {
+        "totalsalary": "4179213.81",
+        "pool": "4.00",
+        "pool_available": "167168.55",
+        "totalDistributed": "1051011.13",
+        "totalDistrubuted_Percentage": "25.00",
+        "remainingPool": "-883842.58",
+        "ModelId": "CM20250030",
+        "year": "2025",
+        "Targettab": "HR Data",
+        "remainingPool_Percentage": "-21.15",
+        "remainingPoolbalance": "-84.09",
+        "createdname": "Raja Sekhar Kirlampudi",
+        "modelName": "Raja_0826_1",
+        "to_header": [
+            {
+                "option": "Option1",
+                "performancesubzone": "6.1",
+                "payzone": "6",
+                "rating": "E/E",
+                "budget": "0.00",
+                "total": "0.00",
+                "count": 0,
+                "Indicator": "0.00",
+                "sequence": "1",
+                "to_item": [
+                    {
+                        "id": "580aad5c-3d58-4e31-a6fe-23a557060070",
+                        "text": "<80%",
+                        "value": "8.00",
+                        "basecost": "0.00",
+                        "threshholdfrom": "4.00",
+                        "threshholdto": "10.00",
+                        "startrange": "0.00",
+                        "endrange": "79.99",
+                        "sequence": "1"
+                    },
+                    {
+                        "id": "ceebb3d4-3d89-4d7e-8396-c421dcca013c",
+                        "text": "80% - <90%",
+                        "value": "7.50",
+                        "basecost": "0.00",
+                        "threshholdfrom": "3.00",
+                        "threshholdto": "9.00",
+                        "startrange": "80.00",
+                        "endrange": "89.99",
+                        "sequence": "2"
+                    },
+                    {
+                        "id": "201d36e6-3d05-411c-950c-85bf7edc5c2d",
+                        "text": "90% - <95%",
+                        "value": "7.00",
+                        "basecost": "0.00",
+                        "threshholdfrom": "2.00",
+                        "threshholdto": "8.00",
+                        "startrange": "90.00",
+                        "endrange": "94.99",
+                        "sequence": "3"
+                    },
+                    {
+                        "id": "5136cad1-1543-4608-b5af-f9b7d7734ced",
+                        "text": "95% - 105%",
+                        "value": "6.50",
+                        "basecost": "0.00",
+                        "threshholdfrom": "2.00",
+                        "threshholdto": "6.00",
+                        "startrange": "95.00",
+                        "endrange": "105.00",
+                        "sequence": "4"
+                    },
+                    {
+                        "id": "a09c821c-6a83-4939-873e-f63ed05abdb5",
+                        "text": ">105% - 110%",
+                        "value": "6.00",
+                        "basecost": "0.00",
+                        "threshholdfrom": "1.00",
+                        "threshholdto": "5.00",
+                        "startrange": "105.01",
+                        "endrange": "110.00",
+                        "sequence": "5"
+                    },
+                    {
+                        "id": "78cd7f5c-6333-452d-8a94-be7509288fe0",
+                        "text": ">110% - <120%",
+                        "value": "5.50",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "4.00",
+                        "startrange": "110.01",
+                        "endrange": "119.99",
+                        "sequence": "6"
+                    },
+                    {
+                        "id": "0700527d-9b23-487d-9296-f3e011251312",
+                        "text": ">=120%",
+                        "value": "5.00",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "0.00",
+                        "startrange": "120.00",
+                        "endrange": "999.00",
+                        "sequence": "7"
+                    }
+                ]
+            },
+            {
+                "option": "Option1",
+                "performancesubzone": "6.2",
+                "payzone": "6",
+                "rating": "E/C+,C+/E",
+                "budget": "25302.73",
+                "total": "860682.36",
+                "count": 3,
+                "Indicator": "-835379.63",
+                "sequence": "2",
+                "to_item": [
+                    {
+                        "id": "b679e175-95cb-4c60-9d4c-7c30069abdf3",
+                        "text": "<80%",
+                        "value": "7.60",
+                        "basecost": "0.00",
+                        "threshholdfrom": "4.00",
+                        "threshholdto": "10.00",
+                        "startrange": "0.00",
+                        "endrange": "79.99",
+                        "sequence": "1"
+                    },
+                    {
+                        "id": "64cc2bfb-6c34-4fe9-b457-7d6de10e74d0",
+                        "text": "80% - <90%",
+                        "value": "100.00",
+                        "basecost": "0.00",
+                        "threshholdfrom": "3.00",
+                        "threshholdto": "9.00",
+                        "startrange": "80.00",
+                        "endrange": "89.99",
+                        "sequence": "2"
+                    },
+                    {
+                        "id": "ff48f222-aa79-4efd-af31-0c5645521a9a",
+                        "text": "90% - <95%",
+                        "value": "200.00",
+                        "basecost": "0.00",
+                        "threshholdfrom": "2.00",
+                        "threshholdto": "8.00",
+                        "startrange": "90.00",
+                        "endrange": "94.99",
+                        "sequence": "3"
+                    },
+                    {
+                        "id": "aa1c026e-f5d7-4b5e-9c30-62d9f5b328ff",
+                        "text": "95% - 105%",
+                        "value": "200.00",
+                        "basecost": "216199.98",
+                        "threshholdfrom": "2.00",
+                        "threshholdto": "6.00",
+                        "startrange": "95.00",
+                        "endrange": "105.00",
+                        "sequence": "4"
+                    },
+                    {
+                        "id": "5633b979-f7b6-4e2a-96f5-04db3b610ec8",
+                        "text": ">105% - 110%",
+                        "value": "200.00",
+                        "basecost": "0.00",
+                        "threshholdfrom": "1.00",
+                        "threshholdto": "5.00",
+                        "startrange": "105.01",
+                        "endrange": "110.00",
+                        "sequence": "5"
+                    },
+                    {
+                        "id": "4dc70aae-f372-4b5f-b619-0eff32714da5",
+                        "text": ">110% - <120%",
+                        "value": "200.00",
+                        "basecost": "214141.20",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "4.00",
+                        "startrange": "110.01",
+                        "endrange": "119.99",
+                        "sequence": "6"
+                    },
+                    {
+                        "id": "7a95a2c8-04de-40b0-8fb4-2b989808b8ba",
+                        "text": ">=120%",
+                        "value": "4.60",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "0.00",
+                        "startrange": "120.00",
+                        "endrange": "999.00",
+                        "sequence": "7"
+                    }
+                ]
+            },
+            {
+                "option": "Option1",
+                "performancesubzone": "5.1",
+                "payzone": "5",
+                "rating": "E/C, C/E, C+/C+",
+                "budget": "35757.85",
+                "total": "50954.94",
+                "count": 5,
+                "Indicator": "-15197.09",
+                "sequence": "3",
+                "to_item": [
+                    {
+                        "id": "15610cc5-d085-428f-8bab-d5efc5c7a58a",
+                        "text": "<80%",
+                        "value": "7.20",
+                        "basecost": "0.00",
+                        "threshholdfrom": "3.00",
+                        "threshholdto": "9.00",
+                        "startrange": "0.00",
+                        "endrange": "79.99",
+                        "sequence": "1"
+                    },
+                    {
+                        "id": "ca85ffe8-6677-4210-820a-e66fdbaba2c5",
+                        "text": "80% - <90%",
+                        "value": "6.70",
+                        "basecost": "0.00",
+                        "threshholdfrom": "2.00",
+                        "threshholdto": "8.00",
+                        "startrange": "80.00",
+                        "endrange": "89.99",
+                        "sequence": "2"
+                    },
+                    {
+                        "id": "7117b484-62b7-4f24-a7d4-0815261a0b38",
+                        "text": "90% - <95%",
+                        "value": "6.20",
+                        "basecost": "0.00",
+                        "threshholdfrom": "2.00",
+                        "threshholdto": "6.00",
+                        "startrange": "90.00",
+                        "endrange": "94.99",
+                        "sequence": "3"
+                    },
+                    {
+                        "id": "5b30d230-ba8a-4610-b89d-a207d95a55ff",
+                        "text": "95% - 105%",
+                        "value": "5.70",
+                        "basecost": "893946.36",
+                        "threshholdfrom": "1.00",
+                        "threshholdto": "5.00",
+                        "startrange": "95.00",
+                        "endrange": "105.00",
+                        "sequence": "4"
+                    },
+                    {
+                        "id": "2518e1d3-68e6-411a-aa9e-db60832c9b7c",
+                        "text": ">105% - 110%",
+                        "value": "5.20",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "4.00",
+                        "startrange": "105.01",
+                        "endrange": "110.00",
+                        "sequence": "5"
+                    },
+                    {
+                        "id": "b7b41931-03b9-4ee4-a5e5-437c80e58c0f",
+                        "text": ">110% - <120%",
+                        "value": "4.70",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "3.00",
+                        "startrange": "110.01",
+                        "endrange": "119.99",
+                        "sequence": "6"
+                    },
+                    {
+                        "id": "375259c4-8007-4b53-9e88-fd92e0c3e857",
+                        "text": ">=120%",
+                        "value": "4.20",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "0.00",
+                        "startrange": "120.00",
+                        "endrange": "999.00",
+                        "sequence": "7"
+                    }
+                ]
+            },
+            {
+                "option": "Option1",
+                "performancesubzone": "4.1",
+                "payzone": "4",
+                "rating": "C+/C,C/C+",
+                "budget": "54472.26",
+                "total": "71409.50",
+                "count": 9,
+                "Indicator": "-16937.24",
+                "sequence": "4",
+                "to_item": [
+                    {
+                        "id": "b2bd80df-5124-4881-85ec-50bc297400f3",
+                        "text": "<80%",
+                        "value": "100.00",
+                        "basecost": "0.00",
+                        "threshholdfrom": "2.00",
+                        "threshholdto": "8.00",
+                        "startrange": "0.00",
+                        "endrange": "79.99",
+                        "sequence": "1"
+                    },
+                    {
+                        "id": "318020d5-6f10-4c0c-9e2b-256aa4d2f508",
+                        "text": "80% - <90%",
+                        "value": "6.30",
+                        "basecost": "0.00",
+                        "threshholdfrom": "2.00",
+                        "threshholdto": "6.00",
+                        "startrange": "80.00",
+                        "endrange": "89.99",
+                        "sequence": "2"
+                    },
+                    {
+                        "id": "75426b08-9bd0-43b4-9222-188b2004a629",
+                        "text": "90% - <95%",
+                        "value": "5.80",
+                        "basecost": "400519.81",
+                        "threshholdfrom": "1.00",
+                        "threshholdto": "5.00",
+                        "startrange": "90.00",
+                        "endrange": "94.99",
+                        "sequence": "3"
+                    },
+                    {
+                        "id": "d915e1cd-2c7e-49d4-b4eb-579411862785",
+                        "text": "95% - 105%",
+                        "value": "5.30",
+                        "basecost": "776696.76",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "4.00",
+                        "startrange": "95.00",
+                        "endrange": "105.00",
+                        "sequence": "4"
+                    },
+                    {
+                        "id": "b9ec5489-e24b-49bc-b27e-6542af58df74",
+                        "text": ">105% - 110%",
+                        "value": "4.80",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "3.00",
+                        "startrange": "105.01",
+                        "endrange": "110.00",
+                        "sequence": "5"
+                    },
+                    {
+                        "id": "c19f4f57-8cb3-4945-b076-31e5c560a04a",
+                        "text": ">110% - <120%",
+                        "value": "4.30",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "2.00",
+                        "startrange": "110.01",
+                        "endrange": "119.99",
+                        "sequence": "6"
+                    },
+                    {
+                        "id": "919183da-e9ec-4244-bb7e-e96d16f6daf3",
+                        "text": ">=120%",
+                        "value": "3.80",
+                        "basecost": "184590.02",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "0.00",
+                        "startrange": "120.00",
+                        "endrange": "999.00",
+                        "sequence": "7"
+                    }
+                ]
+            },
+            {
+                "option": "Option1",
+                "performancesubzone": "4.2",
+                "payzone": "4",
+                "rating": "C/C,E/C-,C-/E,NR/NR,FRM",
+                "budget": "51635.71",
+                "total": "67964.33",
+                "count": 10,
+                "Indicator": "-16328.62",
+                "sequence": "5",
+                "to_item": [
+                    {
+                        "id": "a85a2b14-cdd2-4fc3-a945-53d28fac2102",
+                        "text": "<80%",
+                        "value": "6.40",
+                        "basecost": "0.00",
+                        "threshholdfrom": "2.00",
+                        "threshholdto": "8.00",
+                        "startrange": "0.00",
+                        "endrange": "79.99",
+                        "sequence": "1"
+                    },
+                    {
+                        "id": "d6a75fb7-b418-4c28-ac5b-71c9263f5131",
+                        "text": "80% - <90%",
+                        "value": "5.90",
+                        "basecost": "363979.62",
+                        "threshholdfrom": "2.00",
+                        "threshholdto": "6.00",
+                        "startrange": "80.00",
+                        "endrange": "89.99",
+                        "sequence": "2"
+                    },
+                    {
+                        "id": "c1aadf01-f6fd-421e-a14f-fefa9bd461f0",
+                        "text": "90% - <95%",
+                        "value": "5.40",
+                        "basecost": "430700.40",
+                        "threshholdfrom": "1.00",
+                        "threshholdto": "5.00",
+                        "startrange": "90.00",
+                        "endrange": "94.99",
+                        "sequence": "3"
+                    },
+                    {
+                        "id": "1e2fc0ce-f0bb-41d7-8bc8-4ac3b5edbe83",
+                        "text": "95% - 105%",
+                        "value": "4.90",
+                        "basecost": "387941.84",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "4.00",
+                        "startrange": "95.00",
+                        "endrange": "105.00",
+                        "sequence": "4"
+                    },
+                    {
+                        "id": "73ae0df3-dbba-4599-a4b5-6dbf4e42bc73",
+                        "text": ">105% - 110%",
+                        "value": "4.40",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "3.00",
+                        "startrange": "105.01",
+                        "endrange": "110.00",
+                        "sequence": "5"
+                    },
+                    {
+                        "id": "f51be054-54e3-4fe9-a134-83894d2fd1e8",
+                        "text": ">110% - <120%",
+                        "value": "3.90",
+                        "basecost": "108270.86",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "2.00",
+                        "startrange": "110.01",
+                        "endrange": "119.99",
+                        "sequence": "6"
+                    },
+                    {
+                        "id": "394d2dc7-4755-4f35-97a0-3b02b1f69a4b",
+                        "text": ">=120%",
+                        "value": "3.40",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "0.00",
+                        "startrange": "120.00",
+                        "endrange": "999.00",
+                        "sequence": "7"
+                    }
+                ]
+            },
+            {
+                "option": "Option1",
+                "performancesubzone": "3.1",
+                "payzone": "3",
+                "rating": "C+/C-,C-/C+",
+                "budget": "0.00",
+                "total": "0.00",
+                "count": 0,
+                "Indicator": "0.00",
+                "sequence": "6",
+                "to_item": [
+                    {
+                        "id": "0853cc25-e911-4768-b4a9-fd1a91ad504a",
+                        "text": "<80%",
+                        "value": "6.00",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "4.00",
+                        "startrange": "0.00",
+                        "endrange": "79.99",
+                        "sequence": "1"
+                    },
+                    {
+                        "id": "3578736a-a6d1-403d-8f16-03e773960894",
+                        "text": "80% - <90%",
+                        "value": "5.50",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "3.00",
+                        "startrange": "80.00",
+                        "endrange": "89.99",
+                        "sequence": "2"
+                    },
+                    {
+                        "id": "9d40a056-ed93-49a7-99ee-fabb79ebf753",
+                        "text": "90% - <95%",
+                        "value": "5.00",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "2.00",
+                        "startrange": "90.00",
+                        "endrange": "94.99",
+                        "sequence": "3"
+                    },
+                    {
+                        "id": "4c84b114-6855-4fc9-80af-ffbe5d70e149",
+                        "text": "95% - 105%",
+                        "value": "4.50",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "2.00",
+                        "startrange": "95.00",
+                        "endrange": "105.00",
+                        "sequence": "4"
+                    },
+                    {
+                        "id": "0f64b278-5ba6-4be1-b329-87d5a7a74f41",
+                        "text": ">105% - 110%",
+                        "value": "4.00",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "0.00",
+                        "startrange": "105.01",
+                        "endrange": "110.00",
+                        "sequence": "5"
+                    },
+                    {
+                        "id": "aa819d2e-25cb-4bbd-a64b-cab76b6d5d48",
+                        "text": ">110% - <120%",
+                        "value": "3.50",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "0.00",
+                        "startrange": "110.01",
+                        "endrange": "119.99",
+                        "sequence": "6"
+                    },
+                    {
+                        "id": "181f24ba-499a-4862-b85e-a0eca720b01a",
+                        "text": ">=120%",
+                        "value": "3.00",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "0.00",
+                        "startrange": "120.00",
+                        "endrange": "999.00",
+                        "sequence": "7"
+                    }
+                ]
+            },
+            {
+                "option": "Option1",
+                "performancesubzone": "3.2",
+                "payzone": "3",
+                "rating": "C/C-,C-/C",
+                "budget": "0.00",
+                "total": "0.00",
+                "count": 0,
+                "Indicator": "0.00",
+                "sequence": "7",
+                "to_item": [
+                    {
+                        "id": "21a2ed57-b569-4045-af7a-8ebbaaa80713",
+                        "text": "<80%",
+                        "value": "5.60",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "4.00",
+                        "startrange": "0.00",
+                        "endrange": "79.99",
+                        "sequence": "1"
+                    },
+                    {
+                        "id": "dbedd1a9-39fa-43da-aa80-266e4e0af666",
+                        "text": "80% - <90%",
+                        "value": "5.10",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "3.00",
+                        "startrange": "80.00",
+                        "endrange": "89.99",
+                        "sequence": "2"
+                    },
+                    {
+                        "id": "59c29b0b-f778-434c-b5c0-023909a96b01",
+                        "text": "90% - <95%",
+                        "value": "4.60",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "2.00",
+                        "startrange": "90.00",
+                        "endrange": "94.99",
+                        "sequence": "3"
+                    },
+                    {
+                        "id": "8fe9836f-32d5-4f25-8d04-efc614d46b86",
+                        "text": "95% - 105%",
+                        "value": "4.10",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "2.00",
+                        "startrange": "95.00",
+                        "endrange": "105.00",
+                        "sequence": "4"
+                    },
+                    {
+                        "id": "878a1c19-1ec8-4e39-811b-83ae421bbd34",
+                        "text": ">105% - 110%",
+                        "value": "3.60",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "0.00",
+                        "startrange": "105.01",
+                        "endrange": "110.00",
+                        "sequence": "5"
+                    },
+                    {
+                        "id": "a622e7d9-ab50-4b52-baec-7d2c39d218d7",
+                        "text": ">110% - <120%",
+                        "value": "3.10",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "0.00",
+                        "startrange": "110.01",
+                        "endrange": "119.99",
+                        "sequence": "6"
+                    },
+                    {
+                        "id": "d3efc2c6-5c6a-4b1b-87c0-e50621af8f78",
+                        "text": ">=120%",
+                        "value": "2.60",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "0.00",
+                        "startrange": "120.00",
+                        "endrange": "999.00",
+                        "sequence": "7"
+                    }
+                ]
+            },
+            {
+                "option": "Option1",
+                "performancesubzone": "3.3",
+                "payzone": "3",
+                "rating": "C-/C-",
+                "budget": "0.00",
+                "total": "0.00",
+                "count": 0,
+                "Indicator": "0.00",
+                "sequence": "8",
+                "to_item": [
+                    {
+                        "id": "da3d9ecc-3680-4ebb-a4e3-0136f9d9b692",
+                        "text": "<80%",
+                        "value": "5.20",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "4.00",
+                        "startrange": "0.00",
+                        "endrange": "79.99",
+                        "sequence": "1"
+                    },
+                    {
+                        "id": "0594c56d-8d66-4092-9c05-34cd48cad131",
+                        "text": "80% - <90%",
+                        "value": "4.70",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "3.00",
+                        "startrange": "80.00",
+                        "endrange": "89.99",
+                        "sequence": "2"
+                    },
+                    {
+                        "id": "524147a3-3cd4-4dc2-a809-4e41e8e5c71a",
+                        "text": "90% - <95%",
+                        "value": "4.20",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "2.00",
+                        "startrange": "90.00",
+                        "endrange": "94.99",
+                        "sequence": "3"
+                    },
+                    {
+                        "id": "9433638f-1437-4578-ae7e-fa25cf08b813",
+                        "text": "95% - 105%",
+                        "value": "3.70",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "2.00",
+                        "startrange": "95.00",
+                        "endrange": "105.00",
+                        "sequence": "4"
+                    },
+                    {
+                        "id": "6e4b474a-07d6-4bd2-b9fe-8b3ff245ad9a",
+                        "text": ">105% - 110%",
+                        "value": "3.20",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "0.00",
+                        "startrange": "105.01",
+                        "endrange": "110.00",
+                        "sequence": "5"
+                    },
+                    {
+                        "id": "4ec33e5d-4acf-4caa-a922-8950b988eb39",
+                        "text": ">110% - <120%",
+                        "value": "2.70",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "0.00",
+                        "startrange": "110.01",
+                        "endrange": "119.99",
+                        "sequence": "6"
+                    },
+                    {
+                        "id": "bf9d6274-b5d2-46c2-9fad-e2d88061d148",
+                        "text": ">=120%",
+                        "value": "2.20",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "0.00",
+                        "startrange": "120.00",
+                        "endrange": "999.00",
+                        "sequence": "7"
+                    }
+                ]
+            },
+            {
+                "option": "Option1",
+                "performancesubzone": "2.1",
+                "payzone": "2",
+                "rating": "E/NI,NI/E",
+                "budget": "0.00",
+                "total": "0.00",
+                "count": 0,
+                "Indicator": "0.00",
+                "sequence": "9",
+                "to_item": [
+                    {
+                        "id": "cfaf5d93-7c29-4ff0-96c7-7c165e7d64fe",
+                        "text": "<80%",
+                        "value": "100.00",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "0.00",
+                        "startrange": "0.00",
+                        "endrange": "79.99",
+                        "sequence": "1"
+                    },
+                    {
+                        "id": "8db17817-699d-422c-8c6a-331dc1783621",
+                        "text": "80% - <90%",
+                        "value": "4.30",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "0.00",
+                        "startrange": "80.00",
+                        "endrange": "89.99",
+                        "sequence": "2"
+                    },
+                    {
+                        "id": "71d23650-adcb-4879-bc51-26da33cbba98",
+                        "text": "90% - <95%",
+                        "value": "3.80",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "0.00",
+                        "startrange": "90.00",
+                        "endrange": "94.99",
+                        "sequence": "3"
+                    },
+                    {
+                        "id": "69f67e93-7c6d-4e54-b2fb-3cb80a8a4e49",
+                        "text": "95% - 105%",
+                        "value": "3.30",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "0.00",
+                        "startrange": "95.00",
+                        "endrange": "105.00",
+                        "sequence": "4"
+                    },
+                    {
+                        "id": "c5a612a5-a7c2-4566-a5cd-fe7bd39394a8",
+                        "text": ">105% - 110%",
+                        "value": "2.80",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "0.00",
+                        "startrange": "105.01",
+                        "endrange": "110.00",
+                        "sequence": "5"
+                    },
+                    {
+                        "id": "40c461ba-07ad-4c09-bccc-36478cc6e977",
+                        "text": ">110% - <120%",
+                        "value": "2.30",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "0.00",
+                        "startrange": "110.01",
+                        "endrange": "119.99",
+                        "sequence": "6"
+                    },
+                    {
+                        "id": "e5ccb8b9-37c8-423e-8585-8e63baf721a1",
+                        "text": ">=120%",
+                        "value": "1.80",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "0.00",
+                        "startrange": "120.00",
+                        "endrange": "999.00",
+                        "sequence": "7"
+                    }
+                ]
+            },
+            {
+                "option": "Option1",
+                "performancesubzone": "2.2",
+                "payzone": "2",
+                "rating": "C+/NI,NI/C+",
+                "budget": "0.00",
+                "total": "0.00",
+                "count": 0,
+                "Indicator": "0.00",
+                "sequence": "10",
+                "to_item": [
+                    {
+                        "id": "9a77cac4-1a7e-4ad0-8255-adaaa68015b3",
+                        "text": "<80%",
+                        "value": "4.40",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "0.00",
+                        "startrange": "0.00",
+                        "endrange": "79.99",
+                        "sequence": "1"
+                    },
+                    {
+                        "id": "6401116f-4998-497a-8774-ab8675834bcc",
+                        "text": "80% - <90%",
+                        "value": "3.90",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "0.00",
+                        "startrange": "80.00",
+                        "endrange": "89.99",
+                        "sequence": "2"
+                    },
+                    {
+                        "id": "3a064741-17f4-4241-b196-1b6653055c0f",
+                        "text": "90% - <95%",
+                        "value": "3.40",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "0.00",
+                        "startrange": "90.00",
+                        "endrange": "94.99",
+                        "sequence": "3"
+                    },
+                    {
+                        "id": "7b188c06-4268-4010-883c-3f0a4e5d12ed",
+                        "text": "95% - 105%",
+                        "value": "2.90",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "0.00",
+                        "startrange": "95.00",
+                        "endrange": "105.00",
+                        "sequence": "4"
+                    },
+                    {
+                        "id": "2733bdc5-db46-4de3-86ec-4aa8fb5f7ad2",
+                        "text": ">105% - 110%",
+                        "value": "2.40",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "0.00",
+                        "startrange": "105.01",
+                        "endrange": "110.00",
+                        "sequence": "5"
+                    },
+                    {
+                        "id": "9c58078b-0d70-4a70-9596-ef5bafa049f8",
+                        "text": ">110% - <120%",
+                        "value": "1.90",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "0.00",
+                        "startrange": "110.01",
+                        "endrange": "119.99",
+                        "sequence": "6"
+                    },
+                    {
+                        "id": "eeb165d1-478d-47bc-9777-0b0273d38942",
+                        "text": ">=120%",
+                        "value": "1.40",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "0.00",
+                        "startrange": "120.00",
+                        "endrange": "999.00",
+                        "sequence": "7"
+                    }
+                ]
+            },
+            {
+                "option": "Option1",
+                "performancesubzone": "2.3",
+                "payzone": "2",
+                "rating": "C/NI,NI/C",
+                "budget": "0.00",
+                "total": "0.00",
+                "count": 0,
+                "Indicator": "0.00",
+                "sequence": "11",
+                "to_item": [
+                    {
+                        "id": "d2771661-ea99-470d-9afb-e87c0915123c",
+                        "text": "<80%",
+                        "value": "4.00",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "0.00",
+                        "startrange": "0.00",
+                        "endrange": "79.99",
+                        "sequence": "1"
+                    },
+                    {
+                        "id": "84268ab8-e2d9-48ec-befd-73eadc6beade",
+                        "text": "80% - <90%",
+                        "value": "3.50",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "0.00",
+                        "startrange": "80.00",
+                        "endrange": "89.99",
+                        "sequence": "2"
+                    },
+                    {
+                        "id": "a34ed38b-a5ed-4593-ab60-8ad3d09d1631",
+                        "text": "90% - <95%",
+                        "value": "3.00",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "0.00",
+                        "startrange": "90.00",
+                        "endrange": "94.99",
+                        "sequence": "3"
+                    },
+                    {
+                        "id": "b86b548e-569f-4a22-add9-4a856988ed3a",
+                        "text": "95% - 105%",
+                        "value": "2.50",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "0.00",
+                        "startrange": "95.00",
+                        "endrange": "105.00",
+                        "sequence": "4"
+                    },
+                    {
+                        "id": "01396ec9-c064-40ed-b1f3-d302d538327a",
+                        "text": ">105% - 110%",
+                        "value": "2.00",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "0.00",
+                        "startrange": "105.01",
+                        "endrange": "110.00",
+                        "sequence": "5"
+                    },
+                    {
+                        "id": "dbe15c49-c9d5-4197-aa8d-663bf9a05379",
+                        "text": ">110% - <120%",
+                        "value": "1.50",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "0.00",
+                        "startrange": "110.01",
+                        "endrange": "119.99",
+                        "sequence": "6"
+                    },
+                    {
+                        "id": "75e678e0-48ac-405d-8649-dc4d92a92459",
+                        "text": ">=120%",
+                        "value": "1.00",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "0.00",
+                        "startrange": "120.00",
+                        "endrange": "999.00",
+                        "sequence": "7"
+                    }
+                ]
+            },
+            {
+                "option": "Option1",
+                "performancesubzone": "2.4",
+                "payzone": "2",
+                "rating": "C-/NI,NI/C-",
+                "budget": "0.00",
+                "total": "0.00",
+                "count": 0,
+                "Indicator": "0.00",
+                "sequence": "12",
+                "to_item": [
+                    {
+                        "id": "9e1caacc-1b43-4359-8c2c-a1ff2da2cec4",
+                        "text": "<80%",
+                        "value": "3.60",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "0.00",
+                        "startrange": "0.00",
+                        "endrange": "79.99",
+                        "sequence": "1"
+                    },
+                    {
+                        "id": "80f459bb-7475-4839-a402-a4b3224be84a",
+                        "text": "80% - <90%",
+                        "value": "3.10",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "0.00",
+                        "startrange": "80.00",
+                        "endrange": "89.99",
+                        "sequence": "2"
+                    },
+                    {
+                        "id": "bc3e36a5-2fbf-4e77-82b6-edc34d32c31b",
+                        "text": "90% - <95%",
+                        "value": "2.60",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "0.00",
+                        "startrange": "90.00",
+                        "endrange": "94.99",
+                        "sequence": "3"
+                    },
+                    {
+                        "id": "7ba89b05-eaa6-4bbb-a2e5-0e6a26f16896",
+                        "text": "95% - 105%",
+                        "value": "2.10",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "0.00",
+                        "startrange": "95.00",
+                        "endrange": "105.00",
+                        "sequence": "4"
+                    },
+                    {
+                        "id": "5b8546ca-19ad-48e8-a593-78be5b2b41d3",
+                        "text": ">105% - 110%",
+                        "value": "1.60",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "0.00",
+                        "startrange": "105.01",
+                        "endrange": "110.00",
+                        "sequence": "5"
+                    },
+                    {
+                        "id": "e90f47df-4a1f-4a44-b828-87734334a803",
+                        "text": ">110% - <120%",
+                        "value": "1.10",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "0.00",
+                        "startrange": "110.01",
+                        "endrange": "119.99",
+                        "sequence": "6"
+                    },
+                    {
+                        "id": "0965f21f-0ad4-43bf-af71-3fd30340fc2b",
+                        "text": ">=120%",
+                        "value": "0.60",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "0.00",
+                        "startrange": "120.00",
+                        "endrange": "999.00",
+                        "sequence": "7"
+                    }
+                ]
+            },
+            {
+                "option": "Option1",
+                "performancesubzone": "1.1",
+                "payzone": "1",
+                "rating": "NI/NI",
+                "budget": "0.00",
+                "total": "0.00",
+                "count": 0,
+                "Indicator": "0.00",
+                "sequence": "13",
+                "to_item": [
+                    {
+                        "id": "fe7ce8c9-a4de-4ceb-991c-5799c18d074c",
+                        "text": "<80%",
+                        "value": "3.20",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "0.00",
+                        "startrange": "0.00",
+                        "endrange": "79.99",
+                        "sequence": "1"
+                    },
+                    {
+                        "id": "582dbb2d-35e3-47bc-a96f-3cd042487010",
+                        "text": "80% - <90%",
+                        "value": "2.70",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "0.00",
+                        "startrange": "80.00",
+                        "endrange": "89.99",
+                        "sequence": "2"
+                    },
+                    {
+                        "id": "038eed27-18c7-44bc-80ea-a9785c6d6871",
+                        "text": "90% - <95%",
+                        "value": "2.20",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "0.00",
+                        "startrange": "90.00",
+                        "endrange": "94.99",
+                        "sequence": "3"
+                    },
+                    {
+                        "id": "484f026d-545d-46f8-90b3-2506cee03714",
+                        "text": "95% - 105%",
+                        "value": "1.70",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "0.00",
+                        "startrange": "95.00",
+                        "endrange": "105.00",
+                        "sequence": "4"
+                    },
+                    {
+                        "id": "4ef798ea-c1ba-4587-a911-c1b1dae1f6af",
+                        "text": ">105% - 110%",
+                        "value": "1.20",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "0.00",
+                        "startrange": "105.01",
+                        "endrange": "110.00",
+                        "sequence": "5"
+                    },
+                    {
+                        "id": "0fe99b65-1def-4785-8169-04e2cb9ca9a2",
+                        "text": ">110% - <120%",
+                        "value": "0.70",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "0.00",
+                        "startrange": "110.01",
+                        "endrange": "119.99",
+                        "sequence": "6"
+                    },
+                    {
+                        "id": "be73dfe6-4e51-4ad0-859c-fc3ab331b113",
+                        "text": ">=120%",
+                        "value": "0.20",
+                        "basecost": "0.00",
+                        "threshholdfrom": "0.00",
+                        "threshholdto": "0.00",
+                        "startrange": "120.00",
+                        "endrange": "999.00",
+                        "sequence": "7"
+                    }
+                ]
+            }
+        ]
+    }
+}
+
+
+
+### ## ZHR_COMP_CAP_CRVEXCEP_SRV Draft POST
+POST {{svc}}/insertMultipleBusinessDivisions
+Content-Type: application/json
+
+{ 
+  "entries": [
+  { "year": 2025, "custBusUnit": "Transmission & Distribution", "custDivision": "NextGen", "fieldUsage": "S" },
+  { "year": 2025, "custBusUnit": "Transmission & Distribution", "custDivision": "Veg, Inspection & Contractor Operations" , "fieldUsage": "S"},
+  { "year": 2025, "custBusUnit": "Transmission & Distribution", "custDivision": "Veg, Inspection & Contractor Operations", "fieldUsage": "S" },
+  { "year": 2025, "custBusUnit": "Transmission & Distribution", "custDivision": "Veg, Inspection & Contractor Operations" ,"fieldUsage": "S"},
+  { "year": 2025, "custBusUnit": "Transmission & Distribution", "custDivision": "Veg, Inspection & Contractor Operations", "fieldUsage": "S" },
+  
+  { "year": 2025, "custBusUnit": "Operational Services", "custDivision": "Transportation Services" ,"fieldUsage": "S"},
+  { "year": 2025, "custBusUnit": "Operational Services", "custDivision": "Transportation Services","fieldUsage": "S" },
+  { "year": 2025, "custBusUnit": "Operational Services", "custDivision": "Transportation Services","fieldUsage": "S" },
+  { "year": 2025, "custBusUnit": "Operational Services", "custDivision": "Transportation Services","fieldUsage": "S" },
+  { "year": 2025, "custBusUnit": "Operational Services", "custDivision": "Transportation Services" ,"fieldUsage": "S"},
+  { "year": 2025, "custBusUnit": "Operational Services", "custDivision": "Transportation Services","fieldUsage": "S" },
+  { "year": 2025, "custBusUnit": "Operational Services", "custDivision": "Transportation Services","fieldUsage": "S" },
+  
+  { "year": 2025, "custBusUnit": "Energy Procurement & Management", "custDivision": "Energy Contract Management","fieldUsage": "S" },
+  { "year": 2025, "custBusUnit": "Energy Procurement & Management", "custDivision": "Energy Contract Management","fieldUsage": "S" },
+  { "year": 2025, "custBusUnit": "Energy Procurement & Management", "custDivision": "Energy Contract Management","fieldUsage": "S" },
+  { "year": 2025, "custBusUnit": "Energy Procurement & Management", "custDivision": "Energy Contract Management" ,"fieldUsage": "S"},
+  { "year": 2025, "custBusUnit": "Energy Procurement & Management", "custDivision": "Energy Contract Management","fieldUsage": "S" },
+  { "year": 2025, "custBusUnit": "Energy Procurement & Management", "custDivision": "Energy Contract Management","fieldUsage": "S" },
+  { "year": 2025, "custBusUnit": "Energy Procurement & Management", "custDivision": "Energy Contract Management" ,"fieldUsage": "S"}
+]
+
+  
+}
+
+### ## ZHR_COMP_CAP_CRVEXCEP_SRV DELETE
+
+DELETE {{svc}}/BusinessDivisions(ID='465d67d6-23bd-49c3-bb19-da757cbadf4a',year=2025)
+Content-Type: application/json
+
+{
+    "year" : 2025,
+    "custBusUnit" : "123",
+    "custDivision":"213"
+}
+
+### insert Multipe values for Thresholds
+POST {{svc}}/insertMultipleThresholds
+Content-Type: application/json
+
+{
+  "entries": [
+    {
+        "year": 2025,
+        "compaRatioRanges": "<80%",
+        "startRange": "0.00",
+        "endRange": "79.99",
+        "sequence": "1",
+        "fieldUsage": "S"
+    },
+    {
+        "year": 2025,
+        "compaRatioRanges": "80% - <90%",
+        "startRange": "80.00",
+        "endRange": "89.99",
+        "sequence": "2",
+        "fieldUsage": "S"
+    },
+    {
+        "year": 2025,
+        "compaRatioRanges": "90% - <95%",
+        "startRange": "90.00",
+        "endRange": "94.99",
+        "sequence": "3",
+        "fieldUsage": "S"
+    },
+    {
+        "year": 2025,
+        "compaRatioRanges": "95% - 105%",
+        "startRange": "95.00",
+        "endRange": "105.00",
+        "sequence": "4",
+        "fieldUsage": "S"
+    },
+    {
+        "year": 2025,
+        "compaRatioRanges": ">105% - 110%",
+        "startRange": "105.01",
+        "endRange": "110.00",
+        "sequence": "5",
+        "fieldUsage": "S"
+    },
+    {
+        "year": 2025,
+        "compaRatioRanges": ">110% - <120%",
+        "startRange": "110.01",
+        "endRange": "119.99",
+        "sequence": "6",
+        "fieldUsage": "S"
+    },
+    {
+        "year": 2025,
+        "compaRatioRanges": ">=120%",
+        "startRange": "120.00",
+        "endRange": "999.00",
+        "sequence": "7",
+        "fieldUsage": "S"
+    }
+]
+}
+
+### insert Multipe values for CompensationRatioMaster
+
+POST {{svc}}/insertMultipleCompensationRatioMaster
+Content-Type: application/json
+
+{
+  "entries": [
+    {
+       "year" : "2025",
+        "performanceSubZone" : "6.1",
+        "payzones"           : "6",
+        "compaRatioRanges"   : "<80%",
+        "startRange"         : "79",
+        "endRange"           : null,
+        "performanceRating"  : "E/E",
+        "thresholdFrom"      : "4",
+        "thresholdTo"        : "10",
+        "status"             : "S"
+    },
+    {
+       "year" : "2025",
+        "performanceSubZone" : "6.1",
+        "payzones"           : "6",
+        "compaRatioRanges"   : "80% - <90%",
+        "startRange"         : "80",
+        "endRange"           : "89",
+        "performanceRating"  : "E/E",
+        "thresholdFrom"      : "3",
+        "thresholdTo"        : "9",
+        "status"             : "S"
+    },
+    {
+       "year" : "2025",
+        "performanceSubZone" : "6.1",
+        "payzones"           : "6",
+        "compaRatioRanges"   : "90% - <100%",
+        "startRange"         : "90",
+        "endRange"           : "99",
+        "performanceRating"  : "E/E",
+        "thresholdFrom"      : "4",
+        "thresholdTo"        : "9",
+        "status"             : "S"
+    }
+  ]
+}
+
+### insert Multipe values for Subzones
+
+POST {{svc}}/insertMultipleSubzones
+Content-Type: application/json
+
+{
+  "entries": [
+    {
+      "year": "2024",
+      "performanceSubZone": "6.3",
+      "sequence": "10",
+      "fieldUsage": "S"
+    }
+    
+  ]
+}
+
+
+
+
+### post TargetTabs
+POST {{svc}}/TargetTabs
+Content-Type: application/json
+
+{
+  "year": "2025",
+  "Modeltype": "CRV",
+  "TargetTabName": "Target2",
+  "custBusUnit": "Bus1",
+  "custDivision": "Div2",
+  "fieldUsage": "S"
+}
+
+### POST deletetargetTab
+POST {{svc}}/deleteTargetTab
+Content-Type: application/json
+
+{
+    "year": 2025,
+    "Modeltype": "CRV",
+    "TargetTabName": "target1",
+    "custBusUnit": "Operational Services"
+}
+  
+### POST CRVEXception
+POST {{svc}}/insertMultipleCRVException
+Content-Type: application/json
+
+{
+  "entries": [
+    {
+     "field_id": "ed3542de-331d-4406-a22b-15e13a8a2add",
+      "custPERNR": "125338",
+      "executiveRuleViolation": "S",
+      "mgrFirstName": "Navniel",
+      "mgrLastName": "Pillay",
+      "userName": "Gabriella Loza",
+      "custHireDate": "2021-09-27",
+      "custBusUnit": "Customer Service",
+      "custDivision": "Customer Service Operations Division",
+      "custDepartment": "IDSM/CARE/MBL",
+      "jobTitle": "Tech Docmatn Cntrl, Spec",
+      "custPayGradeLevel": 10,
+      "custTargetTab": "",
+      "curSalary": 73199.98,
+      "custCurHrlySalary": 35.1923,
+      "payGuideMid": 95160,
+      "curRatio": 76.92,
+      "custPerformanceZone": "6",
+      "custPDScore": "C+/E",
+      "compaRatioRanges": "",
+      "meritGuideline": 4,
+      "merit": 7320,
+      "merit_Percentage": 10,
+      "commentformerit": "Aracely Diez commented on February 19, 2025 11:44 PM: Low CR",
+      "custExceptionCode": "A2:Incr > Model - Explain",
+      "lumpSum": 0,
+      "lumpSum_Percentage": 0,
+      "finSalary": 80519.98,
+      "compaRatio": 84.62,
+      "custMeritExcepReqAmt": 0,
+      "custMeritExcepReqPct": 0,
+      "custfinSalaryExcepReq": 73199.98,
+      "custCompaRatioExcepReq": 76.92,
+      "custMeritExcepReqComment": "",
+      "salaryNote": "",
+      "payAdjustmentAmount": 0,
+      "payAdjustmentAmountPer": 0,
+      "payAdjustmentFinalPay": 0,
+      "status": "S"
+    }
+  ]
+}
+
+
+### GET CRVException
+GET {{svc}}/CRVException?$filter=path eq '/FEED/DOWNLOAD/WFA/Compensation_Data_Modeling/CRVExceptionListSF/'
+Content-Type: application/json
+
+
+### GET Integration
+GET {{svc}}/IntegrationConfig?$filter= type eq 'SFTP' and fieldName eq 'POOLPERCENTAGE'
+Content-Type: application/json
+ 
+
+### READ from DB
+GET http://localhost:4004/odata/v4/zhr-comp-cap-crvexcep-srv/readCompensationRatioMaster
+
+### READ from DB
+
+GET {{svc}}/CompensationRatioMaster?$filter=path eq 'Feed\Download\WFA\Compensation_Data_Modeling\CRVThreshold\'
+Content-Type: application/json
+
+### READ from DB
+
+GET {{svc}}/readTargets
+Content-Type: application/json
+
+{
+  "year": 2025
+}
+
+### READ from Totals
+
+GET {{svc}}/readTargetTotal
+Content-Type: application/json
+
+{ 
+  "year" : 2025,
+  "TargetTabName" : "HR Data"
+}
+
+### READ from Totals
+
+GET {{svc}}/readcreatemodel
+Content-Type: application/json
+
+{ 
+  "year" : 2025
+}
+
+### READ from Totals
+
+GET {{svc}}/readModelId
+Content-Type: application/json
+
+{ 
+  "year" : 2025
+}
+
+### READ from Totals
+
+GET {{svc}}/readModelData
+Content-Type: application/json
+
+{ 
+  "year" : 2025,
+  "modelId" : "CM20250060",
+  "option":"Option1"
+}
+
+### Post Number Range
+
+POST {{svc}}/createnumberRange
+Content-Type: application/json
+
+{ 
+  "Modeltype" : "CRV",
+  "year" : 2025
+  
+}
+
+### READ CRV Model
+GET {{svc}}/crvModelsLaunch?$filter= year eq 2025
+Content-Type: application/json
+
+### READ CRV Approved by
+GET {{svc}}/readApprovedby
+Content-Type: application/json
+
+### READ CRV Created by
+GET {{svc}}/readCreatedby
+Content-Type: application/json
+
+### READ CRV Status
+
+GET {{svc}}/readStatus
+Content-Type: application/json
+
+### READ Targets
+GET {{svc}}/readTargetMaster
+Content-Type: application/json
+
+### POST CRV Model
+POST {{svc}}/crvModelsLaunch
+Content-Type: application/json
+
+{
+  "year" : 2025,
+  "model_Id" : "HR001",
+  "targetTab": "TargetTab1",
+  "modelOption":"3",
+  "totalsalary":"3000003",
+  "pool":"100034",
+  "pool_available":"3000045",
+  "totalDistributed":"300000",
+  "totalDistrubuted_Percentage":"2",
+  "remainingPool":"2343425",
+  "remainingPool_Percentage":"2",
+  "remainingPoolbalance":"100000",
+  "createdname":"venkata Gedala",
+  "approvedby" : "saiprasoona.moolpuru@sce.com",
+  "approvedon" : "2025-08-07",
+  "approvedname": "Sai Prasoona",
+  "approvedcomments":"Approved the Model 3",
+  "publishedon":"2025-08-08",
+  "publishedname": "Raghu Nimmalapudi",
+  "publishedby":"raghuram.nimmalapudi@sce.com",
+  "publishedcomments": "Published the Model 3",
+  "status": "P"
+}
+
+###POST TARGET Tabs
+POST {{svc}}/CRVTargets
+Content-Type: application/json
+
+{
+  "year":2025,
+  "TargetTabName":"Target1",
+  "Modeltype":"CRV",
+  "custBusUnit":"Business4",
+  "changedStatus":"X",
+  "fieldUsage":"A"
+}
+
+### POST Divisions
+
+POST {{svc}}/CRVDivisions 
+Content-Type: application/json
+
+{
+  "year":2025,
+  "TargetTabName":"Target1",
+  "Modeltype":"CRV",
+  "custBusUnit":"Business4",
+  "custDivision":"Division6"
+}
+
+### Post Targets
+
+POST {{svc}}/createupsertTargetTabs
+Content-Type: application/json
+
+{
+  "nestedpayload": {
+      "year": 2025,
+      "Modeltype": "CRV",
+      "TargetTabName": "Target10",
+      "custBusUnit": "Business50",
+      "changedStatus": "X",
+      "fieldUsage": "A",
+      "to_divisions": [
+        {
+          "custDivision": "Division50"
+        },
+        {
+          "custDivision": "Division11"
+        }
+      ]
+  }
+}
+
+### READ from CALC
+
+GET {{svc}}/readCalculation1
+Content-Type: application/json
+
+{
+  "TargetTabName": ""
+}
