@@ -201,7 +201,7 @@ entity ZHR_COMP_TBL_TARGETTABS_MASTER : cuid, managed {
     key ID            : UUID;
     key TargetTabName : String(40);
     key Modeltype     : String(10);
-        custBusUnit   : String(80);
+        custBusUnit   : String(80); 
         changedStatus : String(1);
         fieldUsage    : fieldUsage1;
 }
@@ -217,6 +217,32 @@ entity ZHR_COMP_TBL_BUDIV_GROUP {
         custDivision  : String(80);
         TargetTabName : String(40);
 }
+
+// Header: one Target Tab per year/type/name
+// entity ZHR_COMP_TBL_TARGETTABS_MASTER : cuid, managed {
+//     key year          : Integer @assert.range:[1000,9999];
+//     key TargetTabName : String(40);
+//     key Modeltype     : String(10);
+
+//     changedStatus     : String(1);
+//     fieldUsage        : fieldUsage1;
+
+//     // Associations
+//     to_buDivs         : Composition of many ZHR_COMP_TBL_BUDIV_GROUP
+//                           on to_buDivs.TargetTabName = $self.TargetTabName
+//                          and to_buDivs.year          = $self.year
+//                          and to_buDivs.Modeltype     = $self.Modeltype;
+// }
+
+// // Detail: each BU+Division assigned to that Target Tab
+// entity ZHR_COMP_TBL_BUDIV_GROUP {
+//     key year          : Integer @assert.range:[1000,9999];
+//     key Modeltype     : String(10);
+//     key TargetTabName : String(40);
+//     key custBusUnit   : String(80);
+//     key custDivision  : String(80);
+// }
+
 
 
 // Update CRV Exception Master Table

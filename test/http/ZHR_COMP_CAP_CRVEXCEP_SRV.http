@@ -1586,7 +1586,7 @@ Content-Type: application/json
 
 { 
   "year" : 2025,
-  "TargetTabName" : "HR Data"
+  "TargetTabName" : "target 3"
 }
 
 ### READ from Totals
@@ -1614,7 +1614,7 @@ Content-Type: application/json
 
 { 
   "year" : 2025,
-  "modelId" : "CM20250060",
+  "modelId" : "CM20250105",
   "option":"Option1"
 }
 
@@ -1712,21 +1712,25 @@ Content-Type: application/json
 
 {
   "nestedpayload": {
-      "year": 2025,
-      "Modeltype": "CRV",
-      "TargetTabName": "Target10",
-      "custBusUnit": "Business50",
-      "changedStatus": "X",
-      "fieldUsage": "A",
-      "to_divisions": [
+    "year": 2025,
+    "Modeltype": "CRV",
+    "TargetTabName": "target 1",
+    "custBusUnits": [
+        "Ethics & Compliance",
+        "Edison Material Supply"
+    ],
+    "fieldUsage": "A",
+    "changedStatus": "A",
+    "to_divisions": [
         {
-          "custDivision": "Division50"
+            "custDivision": "Privacy Compliance"
         },
         {
-          "custDivision": "Division11"
+            "custDivision": "Compliance Operations"
         }
-      ]
-  }
+    ]
+}
+
 }
 
 ### READ from CALC

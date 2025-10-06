@@ -96,13 +96,31 @@ type CompTargets {
     Modeltype     : String(10);
     TargetTabName : String(40);
     curSalary     : Decimal(17, 2);
-    custBusUnit   : String(80);
     changedStatus : String(1);
     createdBy     : String;
     changedBy     : String;
     fieldUsage    : String(1);
-    to_divisions  : many Divisionstype;
+    to_businessUnits  : many BusinessUnitsType;
 }
+// type BuDivType {
+//   custBusUnit   : String(80);
+//   custDivision  : String(80);
+// }
+
+// type CompTargets {
+//   ID            : UUID;
+//   year          : Integer;
+//   Modeltype     : String(10);
+//   TargetTabName : String(40);
+//   curSalary     : Decimal(17, 2);
+//   changedStatus : String(1);
+//   createdBy     : String;
+//   changedBy     : String;
+//   fieldUsage    : String(1);
+
+//   // ✅ replace with a single collection
+//   to_buDivs     : many BuDivType;
+// }
 
 type ratiowisecost          : {
     compaRatioRanges   : String(20);
@@ -138,6 +156,13 @@ type DeleteTargetTabInput   : {
 type Divisionstype {
     ID           : UUID;
     custDivision : String(80);
+}
+
+type BusinessUnitsType {
+    ID           : UUID;
+    custBusUnit : String(80);
+    to_divisions  : many Divisionstype;
+
 }
 
 type ModelStatus {
@@ -207,8 +232,13 @@ type getmodelHeader         : {
 };
 
 type getTargetDivisions     : {
-    custDivision : String(60);
+    custDivision : String(80);
 };
+
+type getTargetBusinessUnit : {
+    custBusUnit : String(80);
+};
+
 
 type getmodel               : {
     ID                          : UUID;
@@ -231,6 +261,7 @@ type getmodel               : {
     publishedcomments           : String;
     to_modelheader              : many getmodelHeader;
     to_divisions                : many getTargetDivisions;
+    to_businessUnits            : many getTargetBusinessUnit;
 }
 
 
@@ -351,11 +382,10 @@ service ZHR_COMP_CAP_CRVEXCEP_SRV {
     action   deleteBusinessDivisionsByYear(year: Integer);
     action   createupsertTargetTabs(nestedpayload: CompTargets);
 
-    // action   deleteTargetTab(nestedpayload: DeleteTargetTabInput)                   returns Boolean;
     action   deleteTargetTab(year: Integer,
                              Modeltype: String(10),
-                             TargetTabName: String(80),
-                             custBusUnit: String(80))                               returns Boolean;
+                             TargetTabName: String(80)
+                             )                               returns Boolean;
 
     action   createnumberRange(Modeltype: String(10), year: Integer)                returns ModelId;
     action   insertMultipleIntegrationConfig(entries: array of IntegrationConfig);

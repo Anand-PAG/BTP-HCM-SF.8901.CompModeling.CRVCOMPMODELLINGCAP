@@ -683,7 +683,7 @@ class ZHR_COMP_CAP_CRVEXCEP_SRV extends cds.ApplicationService {
             }
           }
         }
-           console.log(allData);
+        console.log(allData);
         const finalData = allData.map((r) => ({
 
           field_id: cds.utils.uuid(),
@@ -732,7 +732,7 @@ class ZHR_COMP_CAP_CRVEXCEP_SRV extends cds.ApplicationService {
 
         })
         );
-     
+
         //Update Pool Percentage
         if (percent) {
           console.log(percent);
@@ -951,40 +951,264 @@ class ZHR_COMP_CAP_CRVEXCEP_SRV extends cds.ApplicationService {
     });
 
 
+    // this.on('readTargets', async (req) => {
+    //   const { year } = req.data;
+
+    //   const TargetData = await SELECT.from(CRVTargets).where({ year });
+
+    //   if (TargetData.length === 0) {
+    //     return [];
+    //   }
+    //   const TargetIds = TargetData.map(t => t.TargetTabName);
+    //   const DivisionsData = await SELECT.from(CRVDivisions).where({
+    //     TargetTabName: { in: TargetIds },
+    //     year: year
+    //   });
+    //   const finalresult = TargetData.map(td => ({
+    //     ID: td.uuid,
+    //     year: td.year,
+    //     Modeltype: td.Modeltype,
+    //     TargetTabName: td.TargetTabName,
+    //     custBusUnit: td.custBusUnit,
+    //     changedStatus: td.changedStatus,
+    //     createdBy: td.createdBy,
+    //     modifiedBy: td.modifiedBy,
+    //     fieldUsage: td.fieldUsage,
+    //     to_divisions: DivisionsData.filter(
+    //       d => d.year === td.year
+    //         && d.Modeltype === td.Modeltype
+    //         && d.TargetTabName === td.TargetTabName
+    //     ).map(d => ({
+    //       ID: d.uuid,
+    //       custDivision: d.custDivision
+    //     }))
+    //   }));
+    //   return finalresult;
+    // });
+
+    //  this.on('readTargets', async (req) => {
+    //   const { year } = req.data;
+
+    //   const TargetData = await SELECT.from(CRVTargets).where({ year });
+    //   if (TargetData.length === 0) return [];
+
+    //   const TargetIds = TargetData.map(t => t.TargetTabName);
+    //   const DivisionsData = await SELECT.from(CRVDivisions).where({
+    //     TargetTabName: { in: TargetIds },
+    //     year
+    //   });
+
+    //   // group by year+Modeltype+TargetTabName
+    //   const grouped = {};
+    //   for (const td of TargetData) {
+    //     const key = `${td.year}|${td.Modeltype}|${td.TargetTabName}`;
+    //     if (!grouped[key]) {
+    //       grouped[key] = {
+    //         ID: td.ID,
+    //         year: td.year,
+    //         Modeltype: td.Modeltype,
+    //         TargetTabName: td.TargetTabName,
+    //         changedStatus: td.changedStatus,
+    //         createdBy: td.createdBy,
+    //         modifiedBy: td.modifiedBy,
+    //         fieldUsage: td.fieldUsage,
+    //         to_buDivs: []
+    //       };
+    //     }
+    //   }
+
+    //   DivisionsData.forEach(d => {
+    //     const key = `${d.year}|${d.Modeltype}|${d.TargetTabName}`;
+    //     if (grouped[key]) {
+    //       grouped[key].to_buDivs.push({
+    //         custBusUnit: d.custBusUnit,
+    //         custDivision: d.custDivision
+    //       });
+    //     }
+    //   });
+
+    //   return Object.values(grouped);
+    // });
+
+    // ------------09/28 change
     this.on('readTargets', async (req) => {
       const { year } = req.data;
 
       const TargetData = await SELECT.from(CRVTargets).where({ year });
+      if (TargetData.length === 0) return [];
 
-      if (TargetData.length === 0) {
-        return [];
-      }
       const TargetIds = TargetData.map(t => t.TargetTabName);
+
       const DivisionsData = await SELECT.from(CRVDivisions).where({
         TargetTabName: { in: TargetIds },
-        year: year
+        year
       });
-      const finalresult = TargetData.map(td => ({
-        ID: td.uuid,
-        year: td.year,
-        Modeltype: td.Modeltype,
-        TargetTabName: td.TargetTabName,
-        custBusUnit: td.custBusUnit,
-        changedStatus: td.changedStatus,
-        createdBy: td.createdBy,
-        modifiedBy: td.modifiedBy,
-        fieldUsage: td.fieldUsage,
-        to_divisions: DivisionsData.filter(
-          d => d.year === td.year
-            && d.Modeltype === td.Modeltype
-            && d.TargetTabName === td.TargetTabName
-        ).map(d => ({
-          ID: d.uuid,
-          custDivision: d.custDivision
-        }))
-      }));
+
+      const finalresult = TargetData.map(td => {
+        // collect divisions grouped by BusinessUnit
+        const buMap = {};
+        DivisionsData.filter(
+          d => d.year === td.year &&
+            d.Modeltype === td.Modeltype &&
+            d.TargetTabName === td.TargetTabName
+        ).forEach(d => {
+          if (!buMap[d.custBusUnit]) {
+            buMap[d.custBusUnit] = {
+              custBusUnit: d.custBusUnit,
+              to_divisions: []
+            };
+          }
+          if (d.custDivision) {
+            buMap[d.custBusUnit].to_divisions.push({
+              ID: d.ID,
+              custDivision: d.custDivision
+            });
+          }
+        });
+
+        return {
+          ID: td.ID,
+          year: td.year,
+          Modeltype: td.Modeltype,
+          TargetTabName: td.TargetTabName,
+          changedStatus: td.changedStatus,
+          createdBy: td.createdBy,
+          changedBy: td.changedBy,
+          fieldUsage: td.fieldUsage,
+          to_businessUnits: Object.values(buMap)
+        };
+      });
+
       return finalresult;
     });
+
+    this.on('createupsertTargetTabs', async (req) => {
+      const { nestedpayload } = req.data;
+
+      try {
+        const {
+          ID,
+          year,
+          Modeltype,
+          TargetTabName,
+          changedStatus,
+          createdBy,
+          changedBy,
+          fieldUsage,
+          to_businessUnits = []
+        } = nestedpayload;
+
+        if (!year || !Modeltype || !TargetTabName) {
+          return req.error(400, 'year, Modeltype, and TargetTabName are required.');
+        }
+
+        // check if header exists
+        const existingModel = await SELECT.one.from(CRVTargets).where({
+          year,
+          Modeltype,
+          TargetTabName
+        });
+
+        if (existingModel) {
+          // update header
+          await UPDATE(CRVTargets).set({
+            changedStatus,
+            fieldUsage,
+            changedBy
+          }).where({
+            ID: existingModel.ID,
+            year,
+            Modeltype,
+            TargetTabName
+          });
+
+          // delete old children
+          await DELETE.from(CRVDivisions).where({ year, Modeltype, TargetTabName });
+        } else {
+          // insert header
+          await INSERT.into(CRVTargets).entries({
+            year,
+            Modeltype,
+            TargetTabName,
+            changedStatus,
+            fieldUsage,
+            createdBy,
+            changedBy
+          });
+        }
+
+        // insert new children
+        for (const bu of to_businessUnits) {
+          if (!bu.custBusUnit) continue;
+
+          if (bu.to_divisions?.length > 0) {
+            for (const div of bu.to_divisions) {
+              await INSERT.into(CRVDivisions).entries({
+                year,
+                Modeltype,
+                TargetTabName,
+                custBusUnit: bu.custBusUnit.trim(),
+                custDivision: (div.custDivision || "").trim()
+              });
+            }
+          } else {
+            // BU without divisions
+            await INSERT.into(CRVDivisions).entries({
+              year,
+              Modeltype,
+              TargetTabName,
+              custBusUnit: bu.custBusUnit.trim(),
+              custDivision: ""
+            });
+          }
+        }
+
+        return existingModel
+          ? 'Target Tab updated successfully'
+          : 'Target Tab created successfully';
+
+      } catch (error) {
+        return req.error(500, `Upsert/Create failed: ${error.message}`);
+      }
+    });
+
+    this.on('deleteTargetTab', async (req) => {
+      const { CRVTargets, CRVDivisions } = this.entities;
+      const { year, Modeltype, TargetTabName } = req.data || {};
+
+      if (!year || !Modeltype || !TargetTabName) {
+        return req.error(400, 'year, Modeltype, and TargetTabName are required');
+      }
+
+      const tx = cds.tx(req);
+
+      // check if header exists
+      const header = await tx.run(
+        SELECT.one.from(CRVTargets).columns('ID')
+          .where({ year, Modeltype, TargetTabName })
+      );
+      if (!header) return { message: 'Nothing to delete' };
+
+      // delete all children (all BUs + divisions under this target)
+      const divDeleted = await tx.run(
+        DELETE.from(CRVDivisions).where({ year, Modeltype, TargetTabName })
+      );
+
+      // delete header
+      const headDeleted = await tx.run(
+        DELETE.from(CRVTargets).where({ ID: header.ID })
+      );
+
+      return { message: `OK (divisions: ${divDeleted}, header: ${headDeleted})` };
+    });
+
+
+    // ------09/28 changes end----
+
+
+
+
+
 
     this.on('readTargetTotal', async (req) => {
       const { year, TargetTabName } = req.data;
@@ -997,20 +1221,21 @@ class ZHR_COMP_CAP_CRVEXCEP_SRV extends cds.ApplicationService {
         Modeltype: 'CRV',
         year: year
       });
+      const aBusinessUnit = [...new Set(Divisions.map(d => d.custBusUnit))];
 
       if (TargetData.length === 0) {
         return null;
       }
-      var businessUnit = TargetData[0].custBusUnit || '';
       const aDivisions = Divisions.map(d => d.custDivision) || [];
       const aExceptionData = await SELECT.from(CRVException)
         .columns(
-          'custBusUnit',
+          //'custBusUnit',
           'sum(curSalary) as totalSalary'
         ).where({
-          custBusUnit: businessUnit,
+          custBusUnit: { in: aBusinessUnit },
           custDivision: { in: aDivisions }
-        }).groupBy('custBusUnit');
+        });//.groupBy('custBusUnit');
+        console.log(aExceptionData);
       const pdpwisedata = await db.run(
         SELECT
           .from(CRVException)
@@ -1021,11 +1246,12 @@ class ZHR_COMP_CAP_CRVEXCEP_SRV extends cds.ApplicationService {
             'count(custPERNR) as totalcount'
           )
           .where({
-            custBusUnit: businessUnit,
+            custBusUnit: { in: aBusinessUnit },//businessUnit,
             custDivision: { in: aDivisions }
           })
           .groupBy('custPerformanceZone', 'custPDScore')
       );
+      console.log(pdpwisedata);
       //const thr = await SELECT.from(Thresholds);
 
       const compRatio = await SELECT
@@ -1094,7 +1320,7 @@ class ZHR_COMP_CAP_CRVEXCEP_SRV extends cds.ApplicationService {
           'curRatioNoRound'
         )
         .where({
-          custBusUnit: businessUnit,
+          custBusUnit: { in: aBusinessUnit },//businessUnit,
           custDivision: { in: aDivisions }
         });
 
@@ -1189,119 +1415,293 @@ class ZHR_COMP_CAP_CRVEXCEP_SRV extends cds.ApplicationService {
       return aFinal;
     });
 
-    this.on('createupsertTargetTabs', async (req) => {
-      const { nestedpayload } = req.data;
-      try {
-        const {
-          ID,
-          year,
-          Modeltype,
-          TargetTabName,
-          custBusUnit,
-          changedStatus,
-          createdBy,
-          changedBy,
-          fieldUsage,
-          to_divisions = []
-        } = nestedpayload;
+    // this.on('createupsertTargetTabs', async (req) => {
+    //   const { nestedpayload } = req.data;
+    //   try {
+    //     const {
+    //       ID,
+    //       year,
+    //       Modeltype,
+    //       TargetTabName,
+    //       custBusUnit,
+    //       changedStatus,
+    //       createdBy,
+    //       changedBy,
+    //       fieldUsage,
+    //       to_divisions = []
+    //     } = nestedpayload;
 
-        if (!year || !Modeltype) {
-          return req.error(400, 'Both year and Modeltype are required.');
-        }
+    //     if (!year || !Modeltype) {
+    //       return req.error(400, 'Both year and Modeltype are required.');
+    //     }
 
-        const existingModel = await SELECT.from(CRVTargets).where({
-          TargetTabName: TargetTabName,
-          year: year,
-          Modeltype: Modeltype
-        });
-        if (existingModel.length > 0) {
-          try {
-            await UPDATE(CRVTargets).set({
-              custBusUnit,
-              changedStatus,
-              fieldUsage,
-            }).where({
-              ID: existingModel[0].ID,
-              year,
-              Modeltype,
-              TargetTabName,
-            });
-            try {
-              await DELETE.from(CRVDivisions).where({ year, Modeltype, TargetTabName });
-              for (const div of to_divisions) {
-                try {
-                  for (const div of to_divisions) {
-                    await INSERT.into(CRVDivisions).entries({
-                      year,
-                      Modeltype,
-                      TargetTabName,
-                      custBusUnit,
-                      custDivision: div.custDivision
-                    });
-                  }
-                  return 'Target Tab Updated Successfully'
-                } catch (error) {
-                  return req.error(500, `Divisions failed: ${error.message}`);
-                }
+    //     const existingModel = await SELECT.from(CRVTargets).where({
+    //       TargetTabName: TargetTabName,
+    //       year: year,
+    //       Modeltype: Modeltype
+    //     });
+    //     if (existingModel.length > 0) {
+    //       try {
+    //         await UPDATE(CRVTargets).set({
+    //           custBusUnit,
+    //           changedStatus,
+    //           fieldUsage,
+    //         }).where({
+    //           ID: existingModel[0].ID,
+    //           year,
+    //           Modeltype,
+    //           TargetTabName,
+    //         });
+    //         try {
+    //           await DELETE.from(CRVDivisions).where({ year, Modeltype, TargetTabName });
+    //           for (const div of to_divisions) {
+    //             try {
+    //               for (const div of to_divisions) {
+    //                 await INSERT.into(CRVDivisions).entries({
+    //                   year,
+    //                   Modeltype,
+    //                   TargetTabName,
+    //                   custBusUnit,
+    //                   custDivision: div.custDivision
+    //                 });
+    //               }
+    //               return 'Target Tab Updated Successfully'
+    //             } catch (error) {
+    //               return req.error(500, `Divisions failed: ${error.message}`);
+    //             }
 
-              }
-            } catch {
-              return req.error(500, `Create failed: ${error.message}`);
-            }
-          } catch (error) {
-            return req.error(500, `Create failed: ${error.message}`);
-          }
-        } else {
-          await INSERT.into(CRVTargets).entries({
-            year,
-            Modeltype,
-            TargetTabName,
-            custBusUnit,
-            changedStatus,
-            fieldUsage,
-          });
-          for (const div of to_divisions) {
-            await INSERT.into(CRVDivisions).entries({
-              year,
-              Modeltype,
-              TargetTabName,
-              custBusUnit,
-              custDivision: div.custDivision
-            });
-          }
-          return 'Target Tab created successfully';
-        }
-      } catch (error) {
-        return req.error(500, `Upsert/Create failed: ${error.message}`);
-      }
+    //           }
+    //         } catch {
+    //           return req.error(500, `Create failed: ${error.message}`);
+    //         }
+    //       } catch (error) {
+    //         return req.error(500, `Create failed: ${error.message}`);
+    //       }
+    //     } else {
+    //       await INSERT.into(CRVTargets).entries({
+    //         year,
+    //         Modeltype,
+    //         TargetTabName,
+    //         custBusUnit,
+    //         changedStatus,
+    //         fieldUsage,
+    //       });
+    //       for (const div of to_divisions) {
+    //         await INSERT.into(CRVDivisions).entries({
+    //           year,
+    //           Modeltype,
+    //           TargetTabName,
+    //           custBusUnit,
+    //           custDivision: div.custDivision
+    //         });
+    //       }
+    //       return 'Target Tab created successfully';
+    //     }
+    //   } catch (error) {
+    //     return req.error(500, `Upsert/Create failed: ${error.message}`);
+    //   }
 
-    });
+    // });
 
-    this.on('deleteTargetTab', async (req) => {
-      const { CRVTargets, CRVDivisions } = this.entities;
-      const { year, Modeltype, TargetTabName, custBusUnit } = req.data || {};
+    // this.on('deleteTargetTab', async (req) => {
+    //   const { CRVTargets, CRVDivisions } = this.entities;
+    //   const { year, Modeltype, TargetTabName, custBusUnit } = req.data || {};
 
-      if (!year || !Modeltype || !TargetTabName || !custBusUnit) {
-        return req.error(400, 'year, Modeltype, TargetTabName, custBusUnit are required');
-      }
+    //   if (!year || !Modeltype || !TargetTabName || !custBusUnit) {
+    //     return req.error(400, 'year, Modeltype, TargetTabName, custBusUnit are required');
+    //   }
 
-      const tx = cds.tx(req);
+    //   const tx = cds.tx(req);
 
-      const header = await tx.run(
-        SELECT.one.from(CRVTargets).columns('ID')
-          .where({ year, Modeltype, TargetTabName, custBusUnit })
-      );
-      if (!header) return { message: 'Nothing to delete' };
+    //   const header = await tx.run(
+    //     SELECT.one.from(CRVTargets).columns('ID')
+    //       .where({ year, Modeltype, TargetTabName, custBusUnit })
+    //   );
+    //   if (!header) return { message: 'Nothing to delete' };
 
-      const divDeleted = await tx.run(
-        DELETE.from(CRVDivisions).where({ year, Modeltype, TargetTabName, custBusUnit })
-      );
-      const headDeleted = await tx.run(
-        DELETE.from(CRVTargets).where({ ID: header.ID })
-      );
+    //   const divDeleted = await tx.run(
+    //     DELETE.from(CRVDivisions).where({ year, Modeltype, TargetTabName, custBusUnit })
+    //   );
+    //   const headDeleted = await tx.run(
+    //     DELETE.from(CRVTargets).where({ ID: header.ID })
+    //   );
 
-      return { message: `OK (divisions: ${divDeleted}, header: ${headDeleted})` };
-    });
+    //   return { message: `OK (divisions: ${divDeleted}, header: ${headDeleted})` };
+    // });
+    //   this.on('deleteTargetTab', async (req) => {
+    //   const { CRVTargets, CRVDivisions } = this.entities;
+    //   const { year, Modeltype, TargetTabName } = req.data || {};
+
+    //   if (!year || !Modeltype || !TargetTabName) {
+    //     return req.error(400, 'year, Modeltype, TargetTabName are required');
+    //   }
+
+    //   const tx = cds.tx(req);
+
+    //   // Delete all divisions linked to this TargetTab (across all BUs)
+    //   const divDeleted = await tx.run(
+    //     DELETE.from(CRVDivisions).where({ year, Modeltype, TargetTabName })
+    //   );
+
+    //   // Delete all TargetTab rows (one per BU in DB)
+    //   const headDeleted = await tx.run(
+    //     DELETE.from(CRVTargets).where({ year, Modeltype, TargetTabName })
+    //   );
+
+    //   return { message: `OK (divisions deleted: ${divDeleted}, targetTab rows deleted: ${headDeleted})` };
+    // });
+
+    //  this.on('deleteTargetTab', async (req) => {
+    //     const { year, Modeltype, TargetTabName } = req.data || {};
+
+    //     // Basic validation
+    //     if (!year || !Modeltype || !TargetTabName) {
+    //       return req.reject(400, 'year, Modeltype, TargetTabName are required');
+    //     }
+
+    //     const tx = cds.tx(req);
+    //     const where = {
+    //       year: Number(year),
+    //       Modeltype: String(Modeltype),
+    //       TargetTabName: String(TargetTabName)
+    //     };
+
+    //     // (Optional) Server-side guard — block if there are launched models
+    //     // If you have a view/entity for launched models, uncomment and adjust:
+    //     //
+    //     // const existsLaunch = await tx.run(
+    //     //   SELECT.one`1`.from('YourModelsLaunchView')
+    //     //     .where({ year: where.year, targetTab: where.TargetTabName })
+    //     // );
+    //     // if (existsLaunch) return req.reject(409, 'Target Tab is used in a Model and cannot be deleted.');
+
+    //     // 1) delete children (no automatic cascade with key-based composition)
+    //     await tx.run(DELETE.from(CRVDivisions).where(where));
+
+    //     // 2) delete header
+    //     const headDeleted = await tx.run(
+    //       DELETE.from(CRVTargets).where(where)
+    //     );
+
+    //     // Return Boolean as defined in CDS
+    //     return !!headDeleted; // true if a header row was removed
+    //   });
+
+    // this.on('createupsertTargetTabs', async (req) => {
+    //   const { nestedpayload } = req.data;
+    //   try {
+    //     const {
+    //       year, Modeltype, TargetTabName,
+    //       changedStatus, createdBy, changedBy, fieldUsage,
+    //       to_buDivs = []
+    //     } = nestedpayload;
+
+    //     if (!year || !Modeltype || !TargetTabName) {
+    //       return req.error(400, 'year, Modeltype, and TargetTabName are required.');
+    //     }
+
+    //     // ensure header exists
+    //     let header = await SELECT.one.from(CRVTargets).where({ year, Modeltype, TargetTabName });
+    //     if (!header) {
+    //       await INSERT.into(CRVTargets).entries({
+    //         year, Modeltype, TargetTabName,
+    //         changedStatus, fieldUsage, createdBy, changedBy
+    //       });
+    //     } else {
+    //       await UPDATE(CRVTargets).set({
+    //         changedStatus, fieldUsage, changedBy
+    //       }).where({ year, Modeltype, TargetTabName });
+    //     }
+
+    //     // delete existing children for this header
+    //     await DELETE.from(CRVDivisions).where({ year, Modeltype, TargetTabName });
+
+    //     // insert new children
+    //     if (to_buDivs.length > 0) {
+    //       await INSERT.into(CRVDivisions).entries(
+    //         to_buDivs.map(({ custBusUnit, custDivision }) => ({
+    //           year, Modeltype, TargetTabName,
+    //           custBusUnit: (custBusUnit || "").trim(),
+    //           custDivision: (custDivision || "").trim()
+    //         }))
+    //       );
+    //     }
+
+    //     return 'Target Tab processed successfully';
+    //   } catch (error) {
+    //     return req.error(500, `Upsert/Create failed: ${error.message}`);
+    //   }
+    // });
+
+
+
+    //  this.on('createupsertTargetTabs', async (req) => {
+    //   const { nestedpayload } = req.data;
+    //   try {
+    //     const {
+    //       year,
+    //       Modeltype,
+    //       TargetTabName,
+    //       changedStatus,
+    //       createdBy,
+    //       changedBy,
+    //       fieldUsage,
+    //       to_buDivs = []   // ✅ instead of custBusUnits + to_divisions
+    //     } = nestedpayload;
+
+    //     if (!year || !Modeltype || !TargetTabName) {
+    //       return req.error(400, 'year, Modeltype, and TargetTabName are required.');
+    //     }
+
+    //     // loop through each BU+Division pair
+    //     for (const { custBusUnit, custDivision } of to_buDivs) {
+    //       // check if record already exists
+    //       const existing = await SELECT.from(CRVDivisions).where({
+    //         year,
+    //         Modeltype,
+    //         TargetTabName,
+    //         custBusUnit,
+    //         custDivision
+    //       });
+
+    //       if (existing.length > 0) {
+    //         // === UPDATE header only ===
+    //         await UPDATE(CRVTargets).set({
+    //           changedStatus,
+    //           fieldUsage,
+    //           changedBy
+    //         }).where({ year, Modeltype, TargetTabName });
+    //       } else {
+    //         // === ensure header exists ===
+    //         const header = await SELECT.one.from(CRVTargets).where({ year, Modeltype, TargetTabName });
+    //         if (!header) {
+    //           await INSERT.into(CRVTargets).entries({
+    //             year,
+    //             Modeltype,
+    //             TargetTabName,
+    //             changedStatus,
+    //             fieldUsage,
+    //             createdBy,
+    //             changedBy
+    //           });
+    //         }
+
+    //         // === create new BU+Division child ===
+    //         await INSERT.into(CRVDivisions).entries({
+    //           year,
+    //           Modeltype,
+    //           TargetTabName,
+    //           custBusUnit,
+    //           custDivision
+    //         });
+    //       }
+    //     }
+
+    //     return 'Target Tab processed successfully';
+    //   } catch (error) {
+    //     return req.error(500, `Upsert/Create failed: ${error.message}`);
+    //   }
+    // });
 
 
 
@@ -1632,7 +2032,8 @@ class ZHR_COMP_CAP_CRVEXCEP_SRV extends cds.ApplicationService {
           year: year
         });
         const Divisions = DivisionsData.map(d => d.custDivision);
-
+        const BusinessUnits = [...new Set(DivisionsData.map(d => d.custBusUnit))];
+        console.log(BusinessUnits);
         modelHeaders = await SELECT.from("com.compmodel.ZHR_COMP_TBL_CRV_MODEL_THRSHLD_HEADER").where({
           year: year,
           model_Id: modelId,
@@ -1713,7 +2114,8 @@ class ZHR_COMP_CAP_CRVEXCEP_SRV extends cds.ApplicationService {
           modelName: model[0].modelName,
           publishedcomments: model[0].publishedcomments,
           to_modelheader: sortedModelHeaders,
-          to_divisions: Divisions
+          to_divisions: Divisions,
+          to_businessUnits: BusinessUnits
         };
         return response;
       } else {
@@ -1803,7 +2205,7 @@ class ZHR_COMP_CAP_CRVEXCEP_SRV extends cds.ApplicationService {
 
               const aTHRSHLD = await SELECT.from(crvModelsHeaderItem)
                 .where({ model_Id, year, targetTab, modelOption });
-              
+
               for (const oBUDIV of aBUDIV) {
                 const exceptionRow = await SELECT.one
                   .from(CRVException)
