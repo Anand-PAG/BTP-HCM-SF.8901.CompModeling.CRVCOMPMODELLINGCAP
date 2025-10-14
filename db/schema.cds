@@ -46,8 +46,8 @@ entity ZHR_COMP_TBL_THRSHLD_MASTER : managed {
         //    performanceSubZone : String(10);
         //    payzones           : String(10);
         compaRatioRanges : String(20);
-        startRange       : Decimal(5, 2) default 0.00;
-        endRange         : Decimal(5, 2) default 0.00;
+        startRange       : Decimal(7, 4) default 0.0000;
+        endRange         : Decimal(7, 4) default 0.0000;
         //    performanceRating  : String(20);
         sequence         : String(3) @assert.format: '^[0-9]{1,3}$';
         fieldUsage       : fieldUsage1; //A- Active,O-Obselete,S-Save
@@ -76,8 +76,8 @@ entity ZHR_COMP_TBL_COMPRATIO_MASTER : managed {
         performanceSubZone : String(10);
         payzones           : String(10);
         compaRatioRanges   : String(20);
-        startRange         : Decimal(5, 2) default 0.00;
-        endRange           : Decimal(5, 2) default 0.00;
+        startRange         : Decimal(7, 4) default 0.0000;
+        endRange           : Decimal(7, 4) default 0.0000;
         performanceRating  : String(50); //Performance Rating C,C++
         thresholdFrom      : Decimal(5, 2) default 0.00;
         thresholdTo        : Decimal(5, 2) default 0.00;
@@ -110,9 +110,9 @@ entity ZHR_COMP_TBL_CRV_EXPTN_MASTER : managed {
             0.00,
             100.00
         ] default 0.00;
-        curRatioNoRound          : Decimal(5, 2) @assert.range: [
-            0.00,
-            100.00
+        curRatioNoRound          : Decimal(7, 4) @assert.range: [
+            0.0000,
+            100.0000
         ] default 0.00;
         customField6             : Decimal;
         custPerformanceZone      : String(10);
@@ -867,7 +867,8 @@ entity ZHR_COMP_TBL_CRV_MODEL_HEADER : cuid, managed {
         to_ThresholdHeaders         : Composition of many ZHR_COMP_TBL_CRV_MODEL_THRSHLD_HEADER
                                           on  to_ThresholdHeaders.year      = year
                                           and to_ThresholdHeaders.model_Id  = model_Id
-                                          and to_ThresholdHeaders.targetTab = targetTab;
+                                          and to_ThresholdHeaders.targetTab = targetTab
+                                          and to_ThresholdHeaders.modelOption = modelOption;
 }
 
 // CRV Model Threshold Table
@@ -915,8 +916,8 @@ entity ZHR_COMP_TBL_CRV_MODEL_THRSHLD_ITEM : cuid, managed {
         value                  : Decimal(5, 2) default 0.00;
         sequence               : String(3) @assert.format: '^[0-9]{1,3}$';
         compaRatioRanges       : String(20);
-        startRange             : Decimal(5, 2) default 0.00;
-        endRange               : Decimal(5, 2) default 0.00;
+        startRange             : Decimal(7, 4) default 0.0000;
+        endRange               : Decimal(7, 4) default 0.0000;
         percentage_val_from    : Decimal(5, 2) default 0.00;
         percentage_val_to      : Decimal(5, 2) default 0.00;
         percentage_text        : String(50);

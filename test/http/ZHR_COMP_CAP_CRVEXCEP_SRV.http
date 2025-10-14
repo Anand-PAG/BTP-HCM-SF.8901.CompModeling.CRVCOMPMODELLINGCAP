@@ -67,6 +67,22 @@ Content-Type:  application/json
     ]
 }
 
+###Delete
+POST {{svc}}/deleteCRVModels
+Content-Type:  application/json
+
+{
+    "payload": [
+        {
+            "year": 2025,
+            "ModelId": "CM20250142",
+            "Targettab": "Customer Service",
+            "option": "Option1",
+            "emailid": "venkata.gedala@sce.com"
+        }
+    ]
+}
+
 ###update status
 
 POST {{svc}}/updateStatus

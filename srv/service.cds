@@ -3,8 +3,8 @@ using com.compmodel as compmodel from '../db/schema';
 type ThresholdInput         : {
     year              : Integer;
     compaRatioRanges  : String(20);
-    startRange        : Decimal(5, 2);
-    endRange          : Decimal(5, 2);
+    startRange        : Decimal(7, 4);
+    endRange          : Decimal(7, 4);
     performanceRating : String(20);
     sequence          : String(3);
     fieldUsage        : String(1);
@@ -22,8 +22,8 @@ type CompensationRatioInput : {
     performanceSubZone : String(10);
     payzones           : String(10);
     compaRatioRanges   : String(20);
-    startRange         : Decimal(5, 2);
-    endRange           : Decimal(5, 2);
+    startRange         : Decimal(7, 4);
+    endRange           : Decimal(7, 4);
     performanceRating  : String(50);
     thresholdFrom      : Decimal(5, 2);
     thresholdTo        : Decimal(5, 2);
@@ -191,8 +191,8 @@ type ModelId {
 type getdyanamiccolumns     : {
     ID               : UUID;
     compaRatioRanges : String(20);
-    startRange       : Decimal(5, 2);
-    endRange         : Decimal(5, 2);
+    startRange       : Decimal(7, 4);
+    endRange         : Decimal(7, 4);
     thresholdFrom    : Decimal(5, 2);
     thresholdTo      : Decimal(5, 2);
     sequence         : String(3);
@@ -210,8 +210,8 @@ type getdyanamicModel       : {
 type getdyanamicmodelItems  : {
     ID               : UUID;
     compaRatioRanges : String(20);
-    startRange       : Decimal(5, 2);
-    endRange         : Decimal(5, 2);
+    startRange       : Decimal(7, 4);
+    endRange         : Decimal(7, 4);
     thresholdFrom    : Decimal(5, 2);
     thresholdTo      : Decimal(5, 2);
     value            : Decimal(5, 2);
@@ -341,6 +341,14 @@ type publishdata            : {
     emailid   : String;
 };
 
+type deleteModels :{
+    ModelId   : String;
+    year      : Integer;
+    Targettab : String;
+    option    : String(10);
+    emailid   : String;
+};
+
 type rolestype              : {
     isAdmin    : Boolean;
     isUser     : Boolean;
@@ -408,6 +416,11 @@ service ZHR_COMP_CAP_CRVEXCEP_SRV {
     }
 
     action   updateApproveoRejectnView(payload: statusChange)                       returns {
+        message : String;
+        status  : String;
+    }
+
+    action deleteCRVModels(payload: array of deleteModels) returns {
         message : String;
         status  : String;
     }

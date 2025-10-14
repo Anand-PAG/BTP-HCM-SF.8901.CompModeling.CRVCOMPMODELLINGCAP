@@ -703,7 +703,7 @@ class ZHR_COMP_CAP_CRVEXCEP_SRV extends cds.ApplicationService {
           custCurHrlySalary: parseFloat(r.custCurHrlySalary) || 0,
           payGuideMid: parseFloat(r.payGuideMid) || 0,
           curRatio: parseFloat(r['%curRatio']) || 0,
-          curRatioNoRound: Math.trunc(Number(r.customField6) * 100) / 100 || 0,
+          curRatioNoRound: Math.trunc(Number(r.customField6) * 10000) / 10000 || 0,
           custPerformanceZone: r.custPerformanceZone || '',
           custPDScore: r.custPDScore || '',
           meritGuideline: r.meritGuideline || '',
@@ -1235,7 +1235,7 @@ class ZHR_COMP_CAP_CRVEXCEP_SRV extends cds.ApplicationService {
           custBusUnit: { in: aBusinessUnit },
           custDivision: { in: aDivisions }
         });//.groupBy('custBusUnit');
-        console.log(aExceptionData);
+      console.log(aExceptionData);
       const pdpwisedata = await db.run(
         SELECT
           .from(CRVException)
@@ -2182,26 +2182,45 @@ class ZHR_COMP_CAP_CRVEXCEP_SRV extends cds.ApplicationService {
             for (const header of modelHeaders) {
               const { model_Id, modelName, year, targetTab, modelOption, status } = header;
 
-              const firstBUDIV = await SELECT.one
+              const allBUDIVs = await SELECT
                 .from(CRVDivisions)
                 .where({ year, TargetTabName: targetTab });
 
-              if (!firstBUDIV) continue;
+              if (!allBUDIVs || allBUDIVs.length === 0) continue;
 
-              const cnt1 = await SELECT.from(BusinessDivisions)
+              const buGroups = {};
+              allBUDIVs.forEach(row => {
+                buGroups[row.custBusUnit] ??= [];
+                buGroups[row.custBusUnit].push(row.custDivision);
+              });
+
+              /*const cnt1 = await SELECT.from(BusinessDivisions)
                 .where({ year, custBusUnit: firstBUDIV.custBusUnit });
 
               const cnt2 = await SELECT.from(CRVDivisions)
-                .where({ year, TargetTabName: targetTab });
+                .where({ year, TargetTabName: targetTab });*/
 
               let aBUDIV = [];
-              if (cnt1.length === cnt2.length) {
-                const modifiedRecord = { ...firstBUDIV, custDivision: "*" };
-                aBUDIV = [modifiedRecord];
-              } else {
-                aBUDIV = await SELECT.from(CRVDivisions)
-                  .where({ year, TargetTabName: targetTab });
+              for (const [bu, divsForBU] of Object.entries(buGroups)) {
+                // compare divisions count with BU master
+                const cntMaster = await SELECT.from(BusinessDivisions).where({ year, custBusUnit: bu });
+                if (cntMaster.length === divsForBU.length) {
+                  // collapse into wildcard division
+                  aBUDIV.push({ custBusUnit: bu, custDivision: "*" });
+                } else {
+                  divsForBU.forEach(div => {
+                    aBUDIV.push({ custBusUnit: bu, custDivision: div });
+                  });
+                }
               }
+
+              /* if (cnt1.length === cnt2.length) {
+                 const modifiedRecord = { ...firstBUDIV, custDivision: "*" };
+                 aBUDIV = [modifiedRecord];
+               } else {
+                 aBUDIV = await SELECT.from(CRVDivisions)
+                   .where({ year, TargetTabName: targetTab });
+               } */
 
               const aTHRSHLD = await SELECT.from(crvModelsHeaderItem)
                 .where({ model_Id, year, targetTab, modelOption });
@@ -2264,7 +2283,17 @@ class ZHR_COMP_CAP_CRVEXCEP_SRV extends cds.ApplicationService {
                 // upload to SFTP
                 const sftp = new Sftpclient();
                 const timestamp = new Date().toISOString().replace(/[-:T]/g, '').slice(0, 15);
-                const remoteFilePath = 'FEED/UPLOAD/WFA/Compensation_Data_Modeling/CRVMatrixModeledGuidelinesUI';
+                const publishPaths = await tx.run(
+                  SELECT.from(this.entities.IntegrationConfig)
+                    .where({ type: 'PUBLISH_PATH' })
+                );
+                const crvPath = getFieldValue(publishPaths, 'CRV_MODELING');
+
+                if (!crvPath) {
+                  return req.error(400, 'Publish path for CRV_MODELING is missing in IntegrationConfig');
+                }
+                const remoteFilePath = crvPath;
+                //const remoteFilePath = 'FEED/UPLOAD/WFA/Compensation_Data_Modeling/CRVMatrixModeledGuidelinesUI';
                 const fileName = `Final(Master_tab)UI_${timestamp}.xlsx`;
                 const localFilePath = path.join(remoteFilePath, fileName);
 
@@ -2424,6 +2453,48 @@ class ZHR_COMP_CAP_CRVEXCEP_SRV extends cds.ApplicationService {
         console.error('Insert/Update failed:', error);
         return req.error(500, `Insert/Update failed: ${error.message}`);
       }
+    });
+
+    //Delete Models
+    this.on('deleteCRVModels', async (req) => {
+      var aError = false;
+      var aErrorMessage;
+      const { payload } = req.data || {};
+      if (!Array.isArray(payload) || payload.length === 0) {
+        return { status: '404', message: 'No Data Found' };
+      }
+      const tx = cds.transaction(req);
+      const MODEL_HDR = 'com.compmodel.ZHR_COMP_TBL_CRV_MODEL_HEADER';
+      const THR_HDR = 'com.compmodel.ZHR_COMP_TBL_CRV_MODEL_THRSHLD_HEADER';
+      const THR_ITEM = 'com.compmodel.ZHR_COMP_TBL_CRV_MODEL_THRSHLD_ITEM';
+      for (let i = 0; i < payload.length; i++) {
+        const model_Id = payload[i].ModelId;
+        const targetTab = (payload[i].Targettab || "").trim();
+        const year = parseInt(payload[i].year);
+        const modelOption = (payload[i].option || "").trim();
+        if (!model_Id || !targetTab || !modelOption) continue;
+        try {
+          const whereClause = {
+            model_Id: payload[i].ModelId,
+            targetTab: payload[i].Targettab.trim(),
+            year: parseInt(payload[i].year),
+            modelOption: payload[i].option
+          };
+          console.log(whereClause);
+          await tx.run(DELETE.from(THR_ITEM).where({model_Id,targetTab,year,modelOption}));
+          await tx.run(DELETE.from(THR_HDR).where({model_Id,targetTab,year,modelOption}));
+          await tx.run(DELETE.from(MODEL_HDR).where({model_Id,targetTab,year,modelOption}));
+        } catch (error) {
+          aError = true;
+          aErrorMessage = error;
+        }
+      }
+      if (aError == false) {
+        return { status: '200', message: 'Models deleted successfully' }
+      } else {
+        req.error(500, `Unexpected error: ${aErrorMessage.message}`);
+      }
+
     });
 
     //--dynamic service for smtp and sftp --- end
