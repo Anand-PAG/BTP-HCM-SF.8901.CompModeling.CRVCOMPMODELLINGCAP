@@ -126,7 +126,8 @@ type ratiowisecost          : {
     compaRatioRanges   : String(20);
     performanceSubZone : String(10);
     base               : Decimal(17, 2);
-    sequence           : String(3)
+    sequence           : String(3);
+    count              : Integer;
 };
 
 type pdpwisecost            : {

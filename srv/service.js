@@ -6,6 +6,7 @@ const fs = require('fs');
 const path = require('path');
 
 const axios = require('axios');
+const { count } = require('console');
 
 class ZHR_COMP_CAP_CRVEXCEP_SRV extends cds.ApplicationService {
 
@@ -1235,7 +1236,7 @@ class ZHR_COMP_CAP_CRVEXCEP_SRV extends cds.ApplicationService {
           custBusUnit: { in: aBusinessUnit },
           custDivision: { in: aDivisions }
         });//.groupBy('custBusUnit');
-      console.log(aExceptionData);
+
       const pdpwisedata = await db.run(
         SELECT
           .from(CRVException)
@@ -1251,7 +1252,7 @@ class ZHR_COMP_CAP_CRVEXCEP_SRV extends cds.ApplicationService {
           })
           .groupBy('custPerformanceZone', 'custPDScore')
       );
-      console.log(pdpwisedata);
+
       //const thr = await SELECT.from(Thresholds);
 
       const compRatio = await SELECT
@@ -1317,28 +1318,43 @@ class ZHR_COMP_CAP_CRVEXCEP_SRV extends cds.ApplicationService {
           'custPerformanceZone',
           'custPDScore',
           'curSalary',
-          'curRatioNoRound'
+          'curRatioNoRound',
+          'custPERNR'
         )
         .where({
           custBusUnit: { in: aBusinessUnit },//businessUnit,
           custDivision: { in: aDivisions }
         });
-
+      
       const sumData = expanded.map(rule => {
+        const matchedPernrs = new Set();
+
         const base = crvdata.reduce((sum, data) => {
           const sameRating = data.custPDScore === rule.performanceRating;
           const sameZone = data.custPerformanceZone === rule.payzones;
           const ratio = parseFloat(data.curRatioNoRound);
           const inRange = isInRange(ratio, rule);
-          /* const inRange =
-             rule.endRange && rule.endRange !== 0
-               ? ratio >= rule.startRange && ratio <= rule.endRange
-               : ratio >= rule.startRange; */
 
           return sameRating && sameZone && inRange
             ? sum + parseFloat(data.curSalary)
             : sum;
         }, 0);
+
+        const Empdata = crvdata.filter(empdata => 
+          empdata.custPDScore === rule.performanceRating &&
+          empdata.custPerformanceZone === rule.payzones 
+        );
+
+        Empdata.forEach(dataemp => {
+          console.log('dataaa'+ dataemp);
+          const ratio = parseFloat(dataemp.curRatioNoRound);
+          console.log(ratio);
+          const inRange = isInRange(ratio, rule);
+          if (inRange){
+            matchedPernrs.add(dataemp.custPERNR);
+          }
+          
+        });
 
         return {
           payzones: rule.payzones,
@@ -1346,7 +1362,8 @@ class ZHR_COMP_CAP_CRVEXCEP_SRV extends cds.ApplicationService {
           range: rule.compaRatioRanges,
           performanceSubZone: rule.performanceSubZone,
           sequence: rule.sequence,
-          base: +base.toFixed(2)
+          base: +base.toFixed(2),
+          count: matchedPernrs.size
         };
       });
 
@@ -1363,24 +1380,27 @@ class ZHR_COMP_CAP_CRVEXCEP_SRV extends cds.ApplicationService {
             compaRatioRanges: item.range,
             sequence: item.sequence,
             performanceRatingSet: new Set(),
-            base: 0
+            base: 0,
+            count: 0
           };
         }
 
         grouped[key].performanceRatingSet.add(item.performanceRating);
         grouped[key].base += item.base;
+        grouped[key].count += item.count;
       }
-
       const filterexpanded = expanded.filter(e =>
-        e.payzones === '6' &&
-        e.performanceRating === 'E/E'
+        e.payzones === '6' //&&
+        //e.performanceRating === 'E/E'
       );
+
       const filtertest = sumData.filter(f =>
         f.performanceRating === 'E/E'
       );
       const crvfilter = crvdata.filter(c =>
-        c.custPerformanceZone === '6.2'
+        c.custPDScore === 'E/E'
       );
+      console.log(crvfilter);
 
 
       // Convert Set to comma-separated string and return final output
@@ -1390,7 +1410,8 @@ class ZHR_COMP_CAP_CRVEXCEP_SRV extends cds.ApplicationService {
         compaRatioRanges: g.compaRatioRanges,
         sequence: g.sequence,
         performanceRating: Array.from(g.performanceRatingSet).join(','),
-        base: +g.base.toFixed(2)
+        base: +g.base.toFixed(2),
+        count: +g.count
       }));
 
       const aFinal = {
@@ -1407,7 +1428,8 @@ class ZHR_COMP_CAP_CRVEXCEP_SRV extends cds.ApplicationService {
             performanceSubZone: t.performanceSubZone,
             compaRatioRanges: t.compaRatioRanges,
             sequence: t.sequence,
-            base: t.base
+            base: t.base,
+            count: t.count
           })) || []
         })) || [],
 
@@ -2481,9 +2503,9 @@ class ZHR_COMP_CAP_CRVEXCEP_SRV extends cds.ApplicationService {
             modelOption: payload[i].option
           };
           console.log(whereClause);
-          await tx.run(DELETE.from(THR_ITEM).where({model_Id,targetTab,year,modelOption}));
-          await tx.run(DELETE.from(THR_HDR).where({model_Id,targetTab,year,modelOption}));
-          await tx.run(DELETE.from(MODEL_HDR).where({model_Id,targetTab,year,modelOption}));
+          await tx.run(DELETE.from(THR_ITEM).where({ model_Id, targetTab, year, modelOption }));
+          await tx.run(DELETE.from(THR_HDR).where({ model_Id, targetTab, year, modelOption }));
+          await tx.run(DELETE.from(MODEL_HDR).where({ model_Id, targetTab, year, modelOption }));
         } catch (error) {
           aError = true;
           aErrorMessage = error;
